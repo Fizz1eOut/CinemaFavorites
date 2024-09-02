@@ -27,8 +27,9 @@ export default defineComponent({
 
 <style scoped>
   .container {
-    max-width: 1440px;
+    max-width: 1256px;
     margin: 0 auto;
+    padding: 15px;
   }
 
   .size-xl {
