@@ -38,18 +38,23 @@ body {
   height: 100%;
 }
 body {
-  background-color: slategrey;
+  background-color: var(--color-background);
   font-size: 18px;
   font-weight: 400;
   color: var(--color-black);
-  font-family: "Source Code Pro", monospace;
+  font-family: "Open Sans", sans-serif;
 }
 
 /* var-color */
 :root {
   --color-white: #FFFFFF;
-  --color-black: #282828;
-  --color-transparent-white: rgba(255, 255, 255, 0.15);
+  --color-black: #030C17;
+  --color-yellow: #F7C923;
+  --color-yellow-hover: #FADF80;
+  --color-yellow-disabled: #F7B200;
+  --color-blue: #08325C;
+  --color-light-blue: #2AD4FE;
+  --color-background: #011A38;
 }
 
 /* @media (max-width: 991px) {
