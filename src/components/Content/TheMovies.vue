@@ -22,11 +22,13 @@ export default defineComponent({
     return {
       movies: [],  // Массив для хранения фильмов
       errorMessage: '',  // Сообщение об ошибке
-      currentPage: 1,  // Текущая страница
+      currentPage: 1,  // Текущая страница для пагинации
       isLoading: false,  // Флаг загрузки
-      genresMap: {},  // Карта жанров, где ключ - это ID, а значение - название жанра
-      selectedGenres: [],  // Массив для хранения выбранных жанров (строк)
+      genresMap: {},  // Карта жанров, где ключ - это ID жанра, а значение - его название
+      allGenres: [],  // Массив для хранения всех доступных жанров
+      selectedGenres: [],  // Массив для хранения выбранных жанров
       selectedYears: [],  // Массив для хранения выбранных годов
+      allYears: []  // Массив для всех возможных лет
     };
   },
 
@@ -45,127 +47,128 @@ export default defineComponent({
       return images;
     },
 
-    // Уникальные жанры из массива movies
+    // Возвращаем все жанры, загруженные при инициализации
     uniqueGenres() {
-      const genres = new Set();
-      this.movies.forEach(movie => {
-        movie.genre_ids.forEach(genreId => {
-          if (this.genresMap[genreId]) {
-            genres.add(this.genresMap[genreId]);
-            // console.log(genres)
-          }
-        });
-      });
-      return Array.from(genres);
+      return this.allGenres;
     },
 
-    // Уникальные года
+    // Возвращаем все года, извлеченные из фильмов
     uniqueYears() {
-      const years = new Set();
-      // console.log(years)
-      this.movies.forEach(movie => {
-        // console.log(movie)
-        const year = new Date(movie.release_date).getFullYear();
-        // console.log(year)
-        years.add(year);
-      });
-      return Array.from(years).sort((a, b) => b - a);
+      return this.allYears;
     },
 
-    // Фильтрованные фильмы
+    // Фильтруем фильмы по выбранным жанрам и годам
     filteredMovies() {
       return this.movies.filter(movie => {
         const movieGenres = movie.genre_ids.map(id => this.genresMap[id]);
         const matchesGenre = !Array.isArray(this.selectedGenres) || this.selectedGenres.length === 0 || this.selectedGenres.some(genre => movieGenres.includes(genre));
-        
+
         const movieYear = movie.release_date.substring(0, 4);  // Извлекаем первые 4 символа из release_date
         const matchesYear = !Array.isArray(this.selectedYears) || this.selectedYears.length === 0 || this.selectedYears.includes(movieYear);
-        
+
         return matchesGenre && matchesYear;
       });
-    },
+    }
   },
-  
+
   watch: {
-    // Следим за изменениями в выбранных жанрах и обновляем параметры запроса в URL
     selectedGenres(newGenres) {
+      // Обновляем фильтр по жанрам, если изменен
       this.updateQueryParams({ genres: newGenres });
+      this.currentPage = 1;  // Сбрасываем страницу
+      this.movies = [];  // Очищаем текущий список фильмов
+      this.getMovies();  // Загружаем фильмы с новыми жанрами
     },
 
-    // Следим за изменениями в выбранных годах и обновляем параметры запроса в URL
     selectedYears(newYears) {
+      // Обновляем фильтр по годам, если изменен
       this.updateQueryParams({ years: newYears });
+      this.currentPage = 1;  // Сбрасываем страницу
+      this.movies = [];  // Очищаем текущий список фильмов
+      this.getMovies();  // Загружаем фильмы с новыми годами
     },
 
     $route: {
+      // Применяем фильтры из URL при изменении маршрута
       handler: 'applyFiltersFromQuery',
       immediate: true
     }
   },
 
   created() {
-    this.getMovies();  // Загружаем фильмы при создании компонента
-    this.getGenres();  // Загружаем жанры при создании компонента
-    this.applyFiltersFromQuery();  // Применяем фильтры из параметров запроса URL
+    // Загружаем данные при инициализации компонента
+    this.getGenres();  // Загружаем список жанров
+    this.getAllYears();  // Загружаем все возможные годы
+    this.applyFiltersFromQuery();  // Применяем фильтры, если они есть в параметрах URL
+    this.getMovies();  // Загружаем фильмы
   },
 
   methods: {
-    // Запрашивает список фильмов с API и добавляет их в массив `movies`.
     async getMovies() {
-      this.isLoading = true;
+      // Запрашиваем список фильмов с примененными фильтрами
+      this.isLoading = true;  // Показываем индикатор загрузки
       try {
-        const data = await fetchMovies(this.currentPage);
-        this.movies = [...this.movies, ...data.results];
-        console.log(this.movies)
-        this.currentPage++;
+        const filters = {
+          genres: this.selectedGenres.map(genre => {
+            // Преобразуем выбранные названия жанров в их ID
+            const genreId = Object.keys(this.genresMap).find(id => this.genresMap[id] === genre);
+            return genreId;
+          }).filter(Boolean),  // Убираем undefined значения, если такие есть
+          years: this.selectedYears,  // Применяем выбранные годы
+        };
+
+        const data = await fetchMovies(this.currentPage, filters);  // Запрашиваем фильмы с фильтрами
+        this.movies = [...this.movies, ...data.results];  // Добавляем полученные фильмы в массив
+        this.currentPage++;  // Увеличиваем страницу для следующего запроса
       } catch (error) {
-        this.errorMessage = 'Failed to retrieve movies.';
+        this.errorMessage = 'Не удалось получить список фильмов.';  // Если произошла ошибка, показываем сообщение
       } finally {
-        this.isLoading = false;
+        this.isLoading = false;  // Скрываем индикатор загрузки
       }
     },
 
-    // Получение списка жанров
+    // Метод для получения всех жанров из API
     async getGenres() {
       try {
-        const data = await fetchGenres();
+        const data = await fetchGenres();  // Запрашиваем список жанров
+        this.allGenres = data.genres.map(genre => genre.name);  // Сохраняем все жанры
         this.genresMap = data.genres.reduce((map, genre) => {
-          map[genre.id] = genre.name;
+          map[genre.id] = genre.name;  // Преобразуем список жанров в карту { id: название }
           return map;
         }, {});
       } catch (error) {
-        console.error('Error fetching genres:', error);
+        console.error('Ошибка при загрузке жанров:', error);  // Логируем ошибку в консоль
       }
     },
-    
-    // Метод для обновления параметров запроса в URL
+
+    async getAllYears() {
+      // Генерируем массив всех лет за последние 100 лет
+      const currentYear = new Date().getFullYear();
+      this.allYears = Array.from({ length: 100 }, (_, i) => (currentYear - i).toString());  // Генерируем последние 100 лет
+    },
+
     updateQueryParams(params) {
+      // Обновляем параметры URL с новыми фильтрами
       const query = { ...this.$route.query, ...params };
-      
-      // Удаляем пустые параметры из запроса
+
       Object.keys(query).forEach(key => {
         if (!query[key] || (Array.isArray(query[key]) && query[key].length === 0)) {
-          console.log(query[key])
           delete query[key];
         }
       });
 
-      // Обновляем URL с новыми параметрами, не обновляя страницу
-      this.$router.push({ query }).catch(() => {});
+      this.$router.push({ query }).catch(() => {});  // Обновляем URL, не перезагружая страницу
     },
 
-    // Метод для применения фильтров на основе параметров запроса из URL
     applyFiltersFromQuery() {
+      // Применяем фильтры из параметров URL
       const query = this.$route.query;
-      // Если в URL есть жанры, устанавливаем их в selectedGenres
-      if (query.genres) {
-        this.selectedGenres = Array.isArray(query.genres) ? query.genres : [query.genres];
-      }
+      
+      this.selectedGenres = query.genres ? (Array.isArray(query.genres) ? query.genres : [query.genres]) : [];
+      this.selectedYears = query.years ? (Array.isArray(query.years) ? query.years : [query.years]) : [];
 
-      // Если в URL есть года, устанавливаем их в selectedYears
-      if (query.years) {
-        this.selectedYears = Array.isArray(query.years) ? query.years : [query.years];
-      }
+      // Загружаем фильмы с новыми фильтрами
+      this.getMovies();
     }
   }
 });
@@ -182,7 +185,6 @@ export default defineComponent({
         close-on-select
         class="custom-multiselect"
       />
-    
       <multiselect
         v-model="selectedYears"
         :options="uniqueYears"
@@ -205,16 +207,27 @@ export default defineComponent({
 
 <style src="@vueform/multiselect/themes/default.css"></style>
 <style>
-.custom-multiselect {
-  border-radius: 8px;
-  background-color: var(--color-blue);
-  color: var(--color-white);
-}
-.custom-multiselect .multiselect__content {
-  background-color: var(--color-blue);
-  color: var(--color-white);
-}
-.custom-multiselect .multiselect-dropdown {
-  background-color: var(--color-blue);
-}
+  .custom-multiselect {
+    border-radius: 8px;
+    background-color: var(--color-blue);
+    color: var(--color-white);
+    border: 1px solid #08325C;
+  }
+  .custom-multiselect.is-active {
+    border: 1px solid #19416E;
+    outline: none;
+    box-shadow: none;
+  }
+  .custom-multiselect .multiselect-dropdown {
+    border: 1px solid #19416E;
+    outline: none;
+    box-shadow: none;
+  }
+  .custom-multiselect .multiselect__content {
+    background-color: var(--color-blue);
+    color: var(--color-white);
+  }
+  .custom-multiselect .multiselect-dropdown {
+    background-color: var(--color-blue);
+  }
 </style>
