@@ -77,7 +77,6 @@ export default defineComponent({
       this.updateQueryParams({ genres: newGenres });
       this.currentPage = 1;  // Сбрасываем страницу
       this.movies = [];  // Очищаем текущий список фильмов
-      this.getMovies();  // Загружаем фильмы с новыми жанрами
     },
 
     selectedYears(newYears) {
@@ -85,7 +84,6 @@ export default defineComponent({
       this.updateQueryParams({ years: newYears });
       this.currentPage = 1;  // Сбрасываем страницу
       this.movies = [];  // Очищаем текущий список фильмов
-      this.getMovies();  // Загружаем фильмы с новыми годами
     },
 
     $route: {
@@ -99,8 +97,7 @@ export default defineComponent({
     // Загружаем данные при инициализации компонента
     this.getGenres();  // Загружаем список жанров
     this.getAllYears();  // Загружаем все возможные годы
-    this.applyFiltersFromQuery();  // Применяем фильтры, если они есть в параметрах URL
-    this.getMovies();  // Загружаем фильмы
+    this.updateQueryParams()
   },
 
   methods: {
@@ -118,6 +115,9 @@ export default defineComponent({
         };
 
         const data = await fetchMovies(this.currentPage, filters);  // Запрашиваем фильмы с фильтрами
+        console.log(data)
+        console.log(this.currentPage)
+        console.log(filters)
         this.movies = [...this.movies, ...data.results];  // Добавляем полученные фильмы в массив
         this.currentPage++;  // Увеличиваем страницу для следующего запроса
       } catch (error) {
