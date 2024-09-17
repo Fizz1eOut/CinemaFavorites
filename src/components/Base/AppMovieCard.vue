@@ -59,6 +59,7 @@ export default defineComponent({
       :src="imageUrl"
       :alt="movie.title"
     >
+    <p v-else class="movie-card__no-poster">There is no poster</p>
     <h3 class="movie-card__title">{{ movie.title }}</h3>
     <div class="movie-card__genre">{{ genreNames }}</div>
     <div class="movie-card__release">Release date: {{ movie.release_date }}</div>
@@ -79,6 +80,20 @@ export default defineComponent({
   }
   .movie-card__img {
     width: 100%;
+  }
+  .movie-card__no-poster {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-style: italic;
+    color: gray;
+    max-width: 180px;
+    width: 100%;
+    min-height: 270px;
+    margin-top: 8px;
+    font-weight: 600;
+    font-size: 17px;
+    letter-spacing: 0.01em;
   }
   .movie-card__title {
     margin-top: 8px;

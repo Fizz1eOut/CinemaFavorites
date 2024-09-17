@@ -2,6 +2,7 @@
 import { defineComponent } from 'vue';
 import { fetchMovies } from '@/api/movies';
 import { fetchGenres } from '@/api/genres';
+import { fetchCountries } from '@/api/countries'; // Импорт функции для получения стран
 import AppContainer from '@/components/Base/AppContainer.vue';
 import AppFilterCard from '@/components/Base/AppFilterCard.vue';
 import AppFilter from '@/components/Base/AppFilter.vue';
@@ -28,7 +29,9 @@ export default defineComponent({
       allGenres: [],  // Массив для хранения всех доступных жанров
       selectedGenres: [],  // Массив для хранения выбранных жанров
       selectedYears: [],  // Массив для хранения выбранных годов
-      allYears: []  // Массив для всех возможных лет
+      allYears: [],  // Массив для всех возможных лет
+      allCountries: [],  // Массив для всех доступных стран
+      selectedCountry: null  // Хранение выбранной страны
     };
   },
 
@@ -40,7 +43,7 @@ export default defineComponent({
 
       if (this.movies.length) {
         this.movies.forEach(movie => {
-          images[movie.id] = movie.poster_path ? `${baseImageUrl}${movie.poster_path}` : null;
+          images[movie.id] = movie.poster_path ? `${baseImageUrl}${movie.poster_path}` : '';
         });
       }
 
@@ -57,6 +60,11 @@ export default defineComponent({
       return this.allYears;
     },
 
+    // Возвращаем список стран для фильтра
+    uniqueCountries() {
+      return this.allCountries.map(country => country.english_name);
+    },
+
     // Фильтруем фильмы по выбранным жанрам и годам
     filteredMovies() {
       return this.movies.filter(movie => {
@@ -66,6 +74,7 @@ export default defineComponent({
         const movieYear = movie.release_date.substring(0, 4);  // Извлекаем первые 4 символа из release_date
         const matchesYear = !Array.isArray(this.selectedYears) || this.selectedYears.length === 0 || this.selectedYears.includes(movieYear);
 
+        
         return matchesGenre && matchesYear;
       });
     }
@@ -86,8 +95,15 @@ export default defineComponent({
       this.movies = [];  // Очищаем текущий список фильмов
     },
 
+    selectedCountry(newCountry) {
+      // Обновляем фильтр по странам, если изменен
+      this.updateQueryParams({ country: newCountry });  // Обновляем параметры URL
+      this.currentPage = 1;  // Сбрасываем страницу
+      this.movies = [];  // Очищаем текущий список фильмов
+    },
+
+    // Применяем фильтры из URL при изменении маршрута
     $route: {
-      // Применяем фильтры из URL при изменении маршрута
       handler: 'applyFiltersFromQuery',
       immediate: true
     }
@@ -97,33 +113,30 @@ export default defineComponent({
     // Загружаем данные при инициализации компонента
     this.getGenres();  // Загружаем список жанров
     this.getAllYears();  // Загружаем все возможные годы
-    this.updateQueryParams()
+    this.getAllCountries();  // Загружаем список стран
+    this.updateQueryParams();  // Обновляем параметры фильтра
   },
 
   methods: {
     async getMovies() {
-      // Запрашиваем список фильмов с примененными фильтрами
-      this.isLoading = true;  // Показываем индикатор загрузки
+      this.isLoading = true;
       try {
         const filters = {
           genres: this.selectedGenres.map(genre => {
-            // Преобразуем выбранные названия жанров в их ID
             const genreId = Object.keys(this.genresMap).find(id => this.genresMap[id] === genre);
             return genreId;
-          }).filter(Boolean),  // Убираем undefined значения, если такие есть
-          years: this.selectedYears,  // Применяем выбранные годы
+          }).filter(Boolean),
+          years: this.selectedYears,
+          country: this.selectedCountry ? this.getCountryCode(this.selectedCountry) : null
         };
 
-        const data = await fetchMovies(this.currentPage, filters);  // Запрашиваем фильмы с фильтрами
-        console.log(data)
-        console.log(this.currentPage)
-        console.log(filters)
-        this.movies = [...this.movies, ...data.results];  // Добавляем полученные фильмы в массив
-        this.currentPage++;  // Увеличиваем страницу для следующего запроса
+        const data = await fetchMovies(this.currentPage, filters);
+        this.movies = [...this.movies, ...data.results];
+        this.currentPage++;
       } catch (error) {
-        this.errorMessage = 'Не удалось получить список фильмов.';  // Если произошла ошибка, показываем сообщение
+        this.errorMessage = 'Не удалось получить список фильмов.';
       } finally {
-        this.isLoading = false;  // Скрываем индикатор загрузки
+        this.isLoading = false;
       }
     },
 
@@ -147,8 +160,24 @@ export default defineComponent({
       this.allYears = Array.from({ length: 100 }, (_, i) => (currentYear - i).toString());  // Генерируем последние 100 лет
     },
 
+    // Метод для получения всех доступных стран
+    async getAllCountries() {
+      try {
+        const data = await fetchCountries();  // Запрашиваем список стран
+        this.allCountries = data;  // Сохраняем все страны
+      } catch (error) {
+        console.error('Ошибка при загрузке стран:', error);  // Логируем ошибку в консоль
+      }
+    },
+
+    // Метод для преобразования названия страны в код страны (ISO 3166-1)
+    getCountryCode(countryName) {
+      const country = this.allCountries.find(c => c.english_name === countryName);  // Ищем страну по названию
+      return country ? country.iso_3166_1 : null;  // Возвращаем код страны или null, если страна не найдена
+    },
+
+    // Обновляем параметры URL с новыми фильтрами
     updateQueryParams(params) {
-      // Обновляем параметры URL с новыми фильтрами
       const query = { ...this.$route.query, ...params };
 
       Object.keys(query).forEach(key => {
@@ -160,15 +189,19 @@ export default defineComponent({
       this.$router.push({ query }).catch(() => {});  // Обновляем URL, не перезагружая страницу
     },
 
-    applyFiltersFromQuery() {
-      // Применяем фильтры из параметров URL
+    // Применяем фильтры из параметров URL
+    async applyFiltersFromQuery() {
       const query = this.$route.query;
-      
+
       this.selectedGenres = query.genres ? (Array.isArray(query.genres) ? query.genres : [query.genres]) : [];
       this.selectedYears = query.years ? (Array.isArray(query.years) ? query.years : [query.years]) : [];
+      
+      // Ждем загрузку всех стран перед применением фильтра по стране
+      await this.getAllCountries();
 
-      // Загружаем фильмы с новыми фильтрами
-      this.getMovies();
+      this.selectedCountry = query.country || null;  // Применяем страну из параметров
+      
+      this.getMovies();  // Загружаем фильмы с новыми фильтрами
     }
   }
 });
@@ -189,6 +222,14 @@ export default defineComponent({
         v-model="selectedYears"
         :options="uniqueYears"
         placeholder="Select years"
+        multiple
+        close-on-select
+        class="custom-multiselect"
+      />
+      <multiselect
+        v-model="selectedCountry"
+        :options="uniqueCountries"
+        placeholder="Select country"
         multiple
         close-on-select
         class="custom-multiselect"
