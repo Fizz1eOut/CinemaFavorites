@@ -2,7 +2,7 @@
 import { defineComponent } from 'vue';
 import { fetchMovies } from '@/api/movies';
 import { fetchGenres } from '@/api/genres';
-import { fetchCountries } from '@/api/countries'; // Импорт функции для получения стран
+import { fetchCountries } from '@/api/countries';
 import AppContainer from '@/components/Base/AppContainer.vue';
 import AppFilterCard from '@/components/Base/AppFilterCard.vue';
 import AppFilter from '@/components/Base/AppFilter.vue';
@@ -31,7 +31,12 @@ export default defineComponent({
       selectedYears: [],  // Массив для хранения выбранных годов
       allYears: [],  // Массив для всех возможных лет
       allCountries: [],  // Массив для всех доступных стран
-      selectedCountry: null  // Хранение выбранной страны
+      selectedCountry: null,  // Хранение выбранной страны
+      sortBy: null,  // Новое свойство для хранения типа сортировки
+      sortOptions: [ // Варианты сортировки
+        { label: 'Rating: Low to High', value: 'rating_asc' },
+        { label: 'Rating: High to Low', value: 'rating_desc' }
+      ]
     };
   },
 
@@ -77,6 +82,18 @@ export default defineComponent({
         
         return matchesGenre && matchesYear;
       });
+    },
+
+    sortedMovies() {
+      const movies = [...this.filteredMovies]; // Копируем отфильтрованные фильмы
+      
+      if (this.sortBy === 'rating_asc') {
+        return movies.sort((a, b) => a.vote_average - b.vote_average); // Сортировка по возрастанию рейтинга
+      } else if (this.sortBy === 'rating_desc') {
+        return movies.sort((a, b) => b.vote_average - a.vote_average); // Сортировка по убыванию рейтинга
+      }
+
+      return movies; // Возвращаем без сортировки, если сортировка не выбрана
     }
   },
 
@@ -106,6 +123,12 @@ export default defineComponent({
     $route: {
       handler: 'applyFiltersFromQuery',
       immediate: true
+    },
+
+    sortBy(newSortBy) {
+      this.updateQueryParams({ sort: newSortBy }); // Обновляем параметры URL при изменении сортировки
+      this.currentPage = 1;  // Сбрасываем страницу
+      this.movies = [];  // Очищаем текущий список фильмов
     }
   },
 
@@ -199,8 +222,9 @@ export default defineComponent({
       // Ждем загрузку всех стран перед применением фильтра по стране
       await this.getAllCountries();
 
-      this.selectedCountry = query.country || null;  // Применяем страну из параметров
-      
+      this.selectedCountry = query.country || null;  // Применяем страну из параметров 
+      this.sortBy = query.sort || null; // Применяем сортировку из параметров URL
+
       this.getMovies();  // Загружаем фильмы с новыми фильтрами
     }
   }
@@ -234,10 +258,19 @@ export default defineComponent({
         close-on-select
         class="custom-multiselect"
       />
+
+      <multiselect
+        v-model="sortBy"
+        :options="sortOptions"
+        placeholder="Sort by"
+        label="label"
+        track-by="value"
+        class="custom-multiselect"
+      />
     </app-filter>
 
     <app-filter-card 
-      :movies="filteredMovies"
+      :movies="sortedMovies"
       :image-url="movieImages"
       :genres-map="genresMap"
       :loading="isLoading"
