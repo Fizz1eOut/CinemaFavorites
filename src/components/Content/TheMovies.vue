@@ -166,14 +166,24 @@ export default defineComponent({
     // Метод для получения всех жанров из API
     async getGenres() {
       try {
-        const data = await fetchGenres();  // Запрашиваем список жанров
-        this.allGenres = data.genres.map(genre => genre.name);  // Сохраняем все жанры
+        // Отправляем запрос на получение списка жанров
+        const data = await fetchGenres();
+
+        // Убираем жанр "Animation" из списка всех жанров
+        this.allGenres = data.genres
+          .filter(genre => genre.name !== 'Animation')  // Фильтруем жанры, исключая "Animation"
+          .map(genre => genre.name);  // Преобразуем объекты жанров в массив их названий
+
+        // Создаем карту жанров, исключая "Animation"
         this.genresMap = data.genres.reduce((map, genre) => {
-          map[genre.id] = genre.name;  // Преобразуем список жанров в карту { id: название }
+          if (genre.name !== 'Animation') {
+            map[genre.id] = genre.name;  // Добавляем жанры с их ID и названиями в карту
+          }
           return map;
         }, {});
       } catch (error) {
-        console.error('Ошибка при загрузке жанров:', error);  // Логируем ошибку в консоль
+        // Логируем ошибку, если произошла ошибка при загрузке жанров
+        console.error('Ошибка при загрузке жанров:', error);
       }
     },
 
