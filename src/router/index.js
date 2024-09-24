@@ -11,6 +11,5 @@ export const router = createRouter({
     { path: '/movies', component: MoviesView, name: 'MoviesView'},
     { path: '/series', component: SeriesView, name: 'SeriesView'},
     { path: '/cartoons', component: CartoonsView, name: 'CartoonsView'},
-  ],
-
+  ], 
 });
