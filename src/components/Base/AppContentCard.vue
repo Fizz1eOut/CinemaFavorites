@@ -3,7 +3,7 @@ import { defineComponent } from 'vue';
 import AppUnderlay from '@/components/Base/AppUnderlay.vue'
 
 export default defineComponent({
-  name: 'AppMovieCard',
+  name: 'AppContentCard',
 
   components: {
     AppUnderlay,
@@ -12,7 +12,12 @@ export default defineComponent({
   props: {
     movie: {
       type: Object,
-      required: true
+      default: null
+    },
+
+    show: {
+      type: Object,
+      default: null
     },
 
     imageUrl: {
@@ -31,9 +36,14 @@ export default defineComponent({
   // },
 
   computed: {
+    // Проверяем, какой пропс был передан и используем его
+    content() {
+      return this.movie || this.show;
+    },
+
     // Преобразуем genre_ids в строку названий жанров
     genreNames() {
-      return this.movie.genre_ids
+      return this.content.genre_ids
         .map(id => this.genresMap[id])
         .filter(Boolean)
         .join(', ');
@@ -41,7 +51,7 @@ export default defineComponent({
 
     // Округляем рейтинг до одного знака после запятой
     roundedRating() {
-      return this.movie.vote_average.toFixed(1);
+      return this.content.vote_average.toFixed(1);
     }
   },
   
@@ -52,18 +62,40 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="movie-card">
-    <img
-      v-if="imageUrl"
-      class="movie-card__img"
-      :src="imageUrl"
-      :alt="movie.title"
-    >
-    <p v-else class="movie-card__no-poster">There is no poster</p>
-    <h3 class="movie-card__title">{{ movie.title }}</h3>
-    <div class="movie-card__genre">{{ genreNames }}</div>
-    <div class="movie-card__release">Release date: {{ movie.release_date }}</div>
-    <div class="movie-card__rating">
+  <div v-if="movie" class="card">
+    <div class="group">
+      <img
+        v-if="imageUrl"
+        class="card__img"
+        :src="imageUrl"
+        :alt="movie.title"
+      >
+      <p v-else class="card__no-poster">There is no poster</p>
+      <h3 class="card__title">{{ movie.title }}</h3>
+    </div>
+    <div class="card__genre">{{ genreNames }}</div>
+    <div class="card__release">Release date: {{ movie.release_date }}</div>
+    <div class="card__rating">
+      <app-underlay>
+        <div class="rating">{{ roundedRating }}</div>
+      </app-underlay>
+    </div>
+  </div>
+
+  <div v-if="show" class="card">
+    <div class="group">
+      <img
+        v-if="imageUrl"
+        class="card__img"
+        :src="imageUrl"
+        :alt="show.title"
+      >
+      <p v-else class="card__no-poster">There is no poster</p>
+      <h3 class="card__title">{{ show.name }}</h3>
+    </div>
+    <div class="card__genre">{{ genreNames }}</div>
+    <div class="card__release">Release date: {{ show.first_air_date }}</div>
+    <div class="card__rating">
       <app-underlay>
         <div class="rating">{{ roundedRating }}</div>
       </app-underlay>
@@ -72,16 +104,25 @@ export default defineComponent({
 </template>
 
 <style scoped>
-  .movie-card {
+  .card {
     position: relative;
     max-width: 180px;
     width: 100%;
     cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    height: 100%;
   }
-  .movie-card__img {
+  .card__img {
     width: 100%;
   }
-  .movie-card__no-poster {
+  .card__img {
+    /* max-width: 180px;
+    width: 100%; */
+    height: 270px;
+  }
+  .card__no-poster {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -95,15 +136,14 @@ export default defineComponent({
     font-size: 17px;
     letter-spacing: 0.01em;
   }
-  .movie-card__title {
+  .card__title {
     margin-top: 8px;
     font-weight: 600;
     font-size: 17px;
     letter-spacing: 0.01em;
     color: var(--color-white);
-    font-family: "Raleway", sans-serif;
   }
-  .movie-card__genre {
+  .card__genre {
     margin-top: 3px;
     font-weight: 400;
     font-size: 15px;
@@ -111,15 +151,16 @@ export default defineComponent({
     color: var(--color-white);
     font-family: "Raleway", sans-serif;
   }
-  .movie-card__release {
+  .card__release {
     margin-top: 2px;
     font-weight: 400;
     font-size: 15px;
     letter-spacing: 0em;
     color: var(--color-white);
     font-family: "Raleway", sans-serif;
+    white-space: nowrap;
   }
-  .movie-card__rating {
+  .card__rating {
     position: absolute;
     top: 10px;
     left: 10px;

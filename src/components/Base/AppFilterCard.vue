@@ -1,20 +1,25 @@
 <script>
 import { defineComponent } from 'vue';
-import AppMovieCard from '@/components/Base/AppMovieCard.vue';
+import AppContentCard from '@/components/Base/AppContentCard.vue';
 import AppButton from '@/components/Base/AppButton.vue';
 
 export default defineComponent({
   name: 'AppFilterCard',
 
   components: {
-    AppMovieCard,
+    AppContentCard,
     AppButton
   },
 
   props: {
     movies: {
       type: Object,
-      required: true
+      default: null
+    },
+
+    series: {
+      type: Object,
+      default: null
     },
 
     imageUrl: {
@@ -51,16 +56,30 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="movies">
-    <ul class="movies__list">
+  <div class="content">
+    <ul v-if="movies" class="content__list">
       <li 
         v-for="movie in movies" 
         :key="movie.id" 
-        class="movies__item"
+        class="content__item"
       >
-        <app-movie-card 
+        <app-content-card 
           :movie="movie" 
           :image-url="imageUrl[movie.id]"
+          :genres-map="genresMap"
+        />
+      </li>
+    </ul>
+
+    <ul v-if="series" class="content__list">
+      <li 
+        v-for="show in series" 
+        :key="show.id" 
+        class="content__item"
+      >
+        <app-content-card 
+          :show="show" 
+          :image-url="imageUrl[show.id]"
           :genres-map="genresMap"
         />
       </li>
@@ -78,19 +97,20 @@ export default defineComponent({
 </template>
 
 <style scoped>
-  .movies {
+  .content {
     margin-top: 40px;
   }
-  .movies__list {
+  .content__list {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 10px;
   }
-  .movies__item {
+  .content__item {
     max-width: 180px;
     width: 100%;
+    height: 400px;
   }
   .button-item {
     margin-top: 40px;

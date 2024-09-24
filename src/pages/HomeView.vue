@@ -1,6 +1,6 @@
 <script>
 import { defineComponent } from 'vue';
-import { fetchMovies } from '@/api/movies';
+import { fetchMovies } from '@/api/movies/movies';
 
 export default defineComponent({
   name: 'HomeView',
