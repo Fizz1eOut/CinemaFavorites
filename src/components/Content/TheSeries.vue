@@ -3,7 +3,6 @@ import { defineComponent } from 'vue';
 import { fetchSeries } from '@/api/series/series'; // Импортируем новый API для сериалов
 import { fetchGenres } from '@/api/series/genres'; // Используем тот же API для жанров
 import { fetchCountries } from '@/api/countries/countries'; // Используем тот же API для стран
-import AppContainer from '@/components/Base/AppContainer.vue';
 import AppFilterCard from '@/components/Base/AppFilterCard.vue';
 import AppFilter from '@/components/Base/AppFilter.vue';
 import Multiselect from '@vueform/multiselect';
@@ -16,7 +15,6 @@ export default defineComponent({
     AppFilterCard,
     AppFilter,
     Multiselect,
-    AppContainer
   },
 
   data() {
@@ -243,51 +241,49 @@ export default defineComponent({
 </script>
 
 <template>
-  <app-container size="md">
-    <app-filter>
-      <multiselect
-        v-model="selectedGenres"
-        :options="uniqueGenres"
-        placeholder="Select genres"
-        multiple
-        close-on-select
-        class="custom-multiselect"
-      />
-      <multiselect
-        v-model="selectedYears"
-        :options="uniqueYears"
-        placeholder="Select years"
-        multiple
-        close-on-select
-        class="custom-multiselect"
-      />
-      <multiselect
-        v-model="selectedCountry"
-        :options="uniqueCountries"
-        placeholder="Select country"
-        multiple
-        close-on-select
-        class="custom-multiselect"
-      />
-
-      <multiselect
-        v-model="sortBy"
-        :options="sortOptions"
-        placeholder="Sort by"
-        label="label"
-        track-by="value"
-        class="custom-multiselect"
-      />
-    </app-filter>
-
-    <app-filter-card 
-      :series="sortedSeries" 
-      :image-url="seriesImages" 
-      :genres-map="genresMap" 
-      :loading="isLoading" 
-      @load-more="getSeries" 
+  <app-filter>
+    <multiselect
+      v-model="selectedGenres"
+      :options="uniqueGenres"
+      placeholder="Select genres"
+      multiple
+      close-on-select
+      class="custom-multiselect"
     />
-  </app-container>
+    <multiselect
+      v-model="selectedYears"
+      :options="uniqueYears"
+      placeholder="Select years"
+      multiple
+      close-on-select
+      class="custom-multiselect"
+    />
+    <multiselect
+      v-model="selectedCountry"
+      :options="uniqueCountries"
+      placeholder="Select country"
+      multiple
+      close-on-select
+      class="custom-multiselect"
+    />
+
+    <multiselect
+      v-model="sortBy"
+      :options="sortOptions"
+      placeholder="Sort by"
+      label="label"
+      track-by="value"
+      class="custom-multiselect"
+    />
+  </app-filter>
+
+  <app-filter-card 
+    :series="sortedSeries" 
+    :image-url="seriesImages" 
+    :genres-map="genresMap" 
+    :loading="isLoading" 
+    @load-more="getSeries" 
+  />
 </template>
 
 <style src="@vueform/multiselect/themes/default.css"></style>

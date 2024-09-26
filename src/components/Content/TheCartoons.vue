@@ -3,7 +3,6 @@ import { defineComponent } from 'vue';
 import { fetchAnimations } from '@/api/cartoons/cartoons';
 import { fetchGenres } from '@/api/movies/genres';
 import { fetchCountries } from '@/api/countries/countries';
-import AppContainer from '@/components/Base/AppContainer.vue';
 import AppFilterCard from '@/components/Base/AppFilterCard.vue';
 import AppFilter from '@/components/Base/AppFilter.vue';
 import Multiselect from '@vueform/multiselect';
@@ -16,7 +15,7 @@ export default defineComponent({
     AppFilterCard,
     AppFilter,
     Multiselect,
-    AppContainer
+
   },
 
   data() {
@@ -242,51 +241,49 @@ export default defineComponent({
 </script>
 
 <template>
-  <app-container size="md">
-    <app-filter>
-      <multiselect
-        v-model="selectedGenres"
-        :options="uniqueGenres"
-        placeholder="Select genres"
-        multiple
-        close-on-select
-        class="custom-multiselect"
-      />
-      <multiselect
-        v-model="selectedYears"
-        :options="uniqueYears"
-        placeholder="Select years"
-        multiple
-        close-on-select
-        class="custom-multiselect"
-      />
-      <multiselect
-        v-model="selectedCountry"
-        :options="uniqueCountries"
-        placeholder="Select country"
-        multiple
-        close-on-select
-        class="custom-multiselect"
-      />
-
-      <multiselect
-        v-model="sortBy"
-        :options="sortOptions"
-        placeholder="Sort by"
-        label="label"
-        track-by="value"
-        class="custom-multiselect"
-      />
-    </app-filter>
-
-    <app-filter-card 
-      :movies="sortedAnimations"
-      :image-url="animationImages"
-      :genres-map="genresMap"
-      :loading="isLoading"
-      @load-more="getAnimations"
+  <app-filter>
+    <multiselect
+      v-model="selectedGenres"
+      :options="uniqueGenres"
+      placeholder="Select genres"
+      multiple
+      close-on-select
+      class="custom-multiselect"
     />
-  </app-container>
+    <multiselect
+      v-model="selectedYears"
+      :options="uniqueYears"
+      placeholder="Select years"
+      multiple
+      close-on-select
+      class="custom-multiselect"
+    />
+    <multiselect
+      v-model="selectedCountry"
+      :options="uniqueCountries"
+      placeholder="Select country"
+      multiple
+      close-on-select
+      class="custom-multiselect"
+    />
+
+    <multiselect
+      v-model="sortBy"
+      :options="sortOptions"
+      placeholder="Sort by"
+      label="label"
+      track-by="value"
+      class="custom-multiselect"
+    />
+  </app-filter>
+
+  <app-filter-card 
+    :movies="sortedAnimations"
+    :image-url="animationImages"
+    :genres-map="genresMap"
+    :loading="isLoading"
+    @load-more="getAnimations"
+  />
 </template>
 
 <style src="@vueform/multiselect/themes/default.css"></style>
