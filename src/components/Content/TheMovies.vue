@@ -289,7 +289,7 @@ export default defineComponent({
 <style>
   .custom-multiselect {
     border-radius: 8px;
-    background-color: var(--color-blue);
+    background-color: var(--color-dark-blue);
     color: var(--color-white);
     border: 1px solid #08325C;
   }
@@ -304,10 +304,10 @@ export default defineComponent({
     box-shadow: none;
   }
   .custom-multiselect .multiselect__content {
-    background-color: var(--color-blue);
+    background-color: var(--color-dark-blue);
     color: var(--color-white);
   }
   .custom-multiselect .multiselect-dropdown {
-    background-color: var(--color-blue);
+    background-color: var(--color-dark-blue);
   }
 </style>
