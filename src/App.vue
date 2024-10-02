@@ -1,12 +1,26 @@
 <script>
 import { defineComponent } from 'vue';
-export default defineComponent({
+import AppHeader from '@/components/Base/AppHeader.vue';
+import AppContainer from '@/components/Base/AppContainer.vue';
 
+export default defineComponent({
+  name: 'AppVue',
+
+  components: {
+    AppContainer,
+    AppHeader
+  }
 });
 </script>
 
 <template>
-  <router-view />
+  <app-header />
+
+  <main>
+    <app-container size="sm">
+      <router-view />
+    </app-container>
+  </main>
 </template>
 
 <style>

@@ -52,7 +52,8 @@ body {
   --color-yellow: #F7C923;
   --color-yellow-hover: #FADF80;
   --color-yellow-disabled: #F7B200;
-  --color-blue: #08325C;
+  --color-dark-blue: #08325C;
+  --color-blue: #0097EE;
   --color-light-blue: #2AD4FE;
   --color-background: #011A38;
 }

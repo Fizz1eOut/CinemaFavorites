@@ -8,7 +8,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <button type="button" class="button">
+  <button type="button" class="button-default">
     <slot />
   </button>
 </template>
@@ -33,5 +33,15 @@ export default defineComponent({
 }
 .button:hover {
   background-color: var(--color-yellow-hover);
+}
+
+.button-default {
+  display: flex;
+  gap: 8px;
+  padding: 0;
+  border-radius: 0;
+  color: var(--color-white);
+  background-color: var(--color-background);
+  cursor: pointer;
 }
 </style>

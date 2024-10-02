@@ -7,8 +7,8 @@ export default defineComponent({
   props: {
     size: {
       type: String,
-      default: 'xs',
-      validator: (value) => ['md', 'lg', 'xl'].includes(value)
+      default: 'sm',
+      validator: (value) => ['sm', 'md', 'lg', 'xl'].includes(value)
     }
   },
   computed: {
@@ -41,6 +41,9 @@ export default defineComponent({
   }
   .size-md {
     padding: 20px;
+  }
+  .size-sm {
+    padding: 0px 16px;
   }
   @media (max-width: 768px) {
     .size-xl {
