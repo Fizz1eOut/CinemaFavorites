@@ -1,8 +1,13 @@
 <script>
 import { defineComponent } from 'vue';
+import IconSearch from '@/components/Icons/IconSearch.vue';
 
 export default defineComponent({
   name: 'AppInput',
+
+  components: {
+    IconSearch,
+  },
 
   props: {
     placeholder: {
@@ -38,7 +43,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
+  <div class="input-wrapper">
     <input 
       v-model="inputValue"
       type="text" 
@@ -47,32 +52,44 @@ export default defineComponent({
       @input="handleInput"
     >
     <label for="#" class="label" />
+    <Icon-search class="icon-input" />
   </div>
 </template>
 
 <style scoped>
-.input {
-  border-radius: 30px;
-  outline: none;
-  width: 100%;
-  padding: 8px 30px;
-  font-size: 32px;
-  font-weight: 400;
-  background-color: var(--color-transparent-white);
-  backdrop-filter: blur(6px);
-  color: var(--color-black);
-}
+  .input-wrapper {
+    position: relative;
+    width: 100%;
+  }
+  .input {
+    width: 100%;
+    padding: 12px 20px 12px 40px;
+    border-radius: 8px;
+    background-color: var(--color-dark-blue);
+    color: var(--color-white);
+    outline: none;
+    border: 1px solid #08325C;
+  }
+  .icon-input {
+    width: 16px;
+    height: 16px;
+    fill: var(--color-white);
+    position: absolute;
+    top: 12px;
+    left: 16px;
+    z-index: 1;
+  }
 ::-webkit-input-placeholder {
-   color: var(--color-black);
+   color: #9EA6B1;
   }
   :-moz-placeholder { 
-    color: var(--color-black);
+    color: #9EA6B1;
   }
   ::-moz-placeholder { 
-    color: var(--color-black);
+    color: #9EA6B1;
   }
   :-ms-input-placeholder {
-    color: var(--color-black);
+    color: #9EA6B1;
   }
   @media (max-width: 360px) {
     .input {

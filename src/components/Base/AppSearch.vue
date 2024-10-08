@@ -3,26 +3,35 @@ import { defineComponent } from 'vue';
 import IconSearch from '@/components/Icons/IconSearch.vue';
 import AppButton from '@/components/Base/AppButton.vue';
 import IconCross from '@/components/Icons/IconCross.vue';
+import AppInput from '@/components/Inputs/AppInput.vue';
+import AppDropdown from '@/components/Base/AppDropdown.vue';
 import { searchMulti } from '@/api/search/search';
-import Multiselect from '@vueform/multiselect';
-import '@vueform/multiselect/themes/default.css';
 
 export default defineComponent({
-  name: 'AppSearch', 
+  name: 'AppSearch',
 
   components: {
     IconSearch,
     AppButton,
-    Multiselect,
-    IconCross
+    IconCross,
+    AppInput,
+    AppDropdown
   },
 
   data() {
     return {
-      isVisible: false,
-      searchQuery: '',  // Модель для текста поиска
-      searchResults: [], // Массив для хранения результатов поиска
+      isVisible: false,  // Контролирует видимость панели поиска
+      query: '',         // Текущая строка запроса
+      searchResults: [], // Массив с результатами поиска
+      selectedResult: null, // Все выбранные результаты
     };
+  },
+
+  computed: {
+    dropdownActive() {
+      // Показывать dropdown только если есть результаты
+      return this.searchResults.length > 0;
+    },
   },
 
   methods: {
@@ -31,43 +40,46 @@ export default defineComponent({
     },
     closeMultiselect() {
       this.isVisible = false;
+      this.query = '';
+      this.searchResults = [];
+      this.selectedResult = null;
     },
-
-    // Метод для поиска, который вызывается при изменении строки поиска
-    async onSearch(query) {
-      // Выполняем поиск только если длина строки больше 2 символов
-      if (query.length > 2) {
-        try {
-          const response = await searchMulti(query.trim()); // Вызов API для поиска
-          this.searchResults = this.processResults(response.results); // Обработка результатов поиска
-          console.log(this.searchResults); // Логируем результаты
-
-          // Переход на страницу с результатами поиска, передача запроса через query параметры
-          this.$router.push({
-            name: 'SearchResult',
-            query: { search: query.trim() } // Передаем запрос как параметр URL
-          });
-        } catch (error) {
-          console.error('Ошибка при поиске:', error);
-        }
+    
+    // Метод для обработки ввода текста
+    async handleInput() {
+      if (this.query.length > 2) {  // Начинать поиск при вводе хотя бы 3 символов
+        const response = await searchMulti(this.query);
+        this.searchResults = response.results;  // Предполагается, что `results` приходит из TMDB
+      } else {
+        this.searchResults = [];
       }
     },
 
-    // Обработка результатов поиска, фильтрация по типу медиа
-    processResults(results) {
-      return results.map(item => {
-        if (item.media_type === 'movie') {
-          return { id: item.id, title: item.title }; // Возвращаем название фильма
-        } else if (item.media_type === 'tv') {
-          return { id: item.id, title: item.name }; // Возвращаем название ТВ-шоу
-        } else if (item.media_type === 'person') {
-          return { id: item.id, title: item.name }; // Возвращаем имя человека
-        } else {
-          return { id: item.id, title: item.name || item.title }; // Другие варианты
-        }
+    // Метод для обработки выбора элемента из подсказок
+    async selectResult(result) {
+      this.query = result.name || result.title || ''; // Устанавливаем выбранное значение в input
+      this.searchResults = [];
+
+      this.$router.push({
+        name: 'SearchResult',
+        query: { query: this.query } // передаем строку поиска как параметр
       });
     },
-  }
+
+    // Метод для поиска по нажатию Enter
+    async handleEnter() {
+    if (this.query.length > 0) {
+      // Проверяем, есть ли результаты поиска
+      if (this.searchResults.length > 0) {
+        // Перенаправляем на страницу с результатами, передавая параметр через router.query
+        this.$router.push({
+          name: 'SearchResult',
+          query: { query: this.query } // передаем строку поиска как параметр 
+        });
+      }
+    }
+  },
+  },
 });
 </script>
 
@@ -81,24 +93,37 @@ export default defineComponent({
       <span>Search</span>
     </app-button>
 
-    <div v-if="isVisible" class="search-multiselect">
-      <multiselect
-        v-model="searchQuery"
-        :options="searchResults"
-        label="title"
-        track-by="id" 
-        placeholder="Enter movie title, TV show or actor" 
-        searchable 
-        class="custom-multiselect"
-        @search-change="onSearch" 
+    <div v-if="isVisible" class="search-item">
+      <app-input 
+        v-model="query"
+        placeholder="What do you want to find?"
+        @input="handleInput"
+        @keyup.enter="handleEnter"
       />
       <icon-cross class="icon-cross" @click="closeMultiselect" />
+
+      <app-dropdown :dropdown-active="dropdownActive" class="dropdown">
+        <li 
+          v-for="result in searchResults" 
+          :key="result.id"
+          class="search-suggestions"
+          @click="selectResult(result)"
+        >
+          {{ result.name || result.title }}
+        </li>
+      </app-dropdown>
     </div>
   </div>
 </template>
 
-<style src="@vueform/multiselect/themes/default.css"></style>
 <style>
+  .search-item .dropdown {
+    width: 92%;
+  }
+  .dropdown .dropdown-list {
+    height: 160px;
+    overflow-y: auto;
+  }
   .search__button  {
     display: flex;
     align-items: center;
@@ -121,28 +146,28 @@ export default defineComponent({
     fill: var(--color-white);
     cursor: pointer;
   }
-  .search-multiselect {
+  .search-item {
+    width: 300px;
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 10px;
   }
-  .custom-multiselect {
-    width: 300px;
+  .search-suggestions {
+    font-size: 15px;
+    font-weight: 400;
+    transition: color 0.3s ease-in-out;
   }
-  .custom-multiselect .multiselect-search {
-    border-radius: 8px;
-    background-color: var(--color-dark-blue);
-    color: var(--color-white);
-    border: 1px solid #08325C;
+  .search-suggestions:hover {
+    color: var(--color-yellow);
   }
-
   @media (max-width: 460px) {
-    .custom-multiselect {
+    .search-item {
       width: 220px;
     }
   }
   @media (max-width: 499px) {
-    .custom-multiselect {
+    .search-item {
       width: 184px;
     }
   } 
