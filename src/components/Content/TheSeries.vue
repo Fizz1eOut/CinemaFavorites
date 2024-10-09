@@ -1,7 +1,7 @@
 <script>
 import { defineComponent } from 'vue';
 import { fetchSeries } from '@/api/series/series'; // Импортируем новый API для сериалов
-import { fetchGenres } from '@/api/series/genres'; // Используем тот же API для жанров
+import { fetchTvGenres } from '@/api/series/genresSeries'; // Используем тот же API для жанров
 import { fetchCountries } from '@/api/countries/countries'; // Используем тот же API для стран
 import AppFilterCard from '@/components/Base/AppFilterCard.vue';
 import AppFilter from '@/components/Base/AppFilter.vue';
@@ -152,7 +152,6 @@ export default defineComponent({
         };
 
         const data = await fetchSeries(this.currentPage, filters); // Используем новый запрос для сериалов
-        console.log(data)
         this.Series = [...this.Series, ...data.results];
         this.currentPage++;
       } catch (error) {
@@ -166,7 +165,7 @@ export default defineComponent({
     async getGenres() {
       try {
         // Отправляем запрос на получение списка жанров
-        const data = await fetchGenres();
+        const data = await fetchTvGenres();
 
         // Убираем жанр "Animation" из списка всех жанров
         this.allGenres = data.genres

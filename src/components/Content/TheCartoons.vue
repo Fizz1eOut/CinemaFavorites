@@ -1,7 +1,7 @@
 <script>
 import { defineComponent } from 'vue';
 import { fetchAnimations } from '@/api/cartoons/cartoons';
-import { fetchGenres } from '@/api/movies/genres';
+import { fetchMovieGenres } from '@/api/movies/genresMovies';
 import { fetchCountries } from '@/api/countries/countries';
 import AppFilterCard from '@/components/Base/AppFilterCard.vue';
 import AppFilter from '@/components/Base/AppFilter.vue';
@@ -166,7 +166,7 @@ export default defineComponent({
     async getGenres() {
       try {
         // Отправляем запрос на получение списка жанров
-        const data = await fetchGenres();
+        const data = await fetchMovieGenres();
 
         // Убираем жанр "Animation" из списка всех жанров
         this.allGenres = data.genres
