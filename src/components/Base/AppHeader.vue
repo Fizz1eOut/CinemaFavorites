@@ -39,7 +39,7 @@ export default defineComponent({
 
           <div class="header__favorites favorites">
             <router-link to="/">
-              <app-button class="search__button">
+              <app-button class="search__button" default>
                 <icon-favorites class="icon-favorites" />
               </app-button>
             </router-link>

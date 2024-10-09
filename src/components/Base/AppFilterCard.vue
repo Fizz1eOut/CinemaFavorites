@@ -85,12 +85,13 @@ export default defineComponent({
       </li>
     </ul>
     <div class="button-item">
-      <app-button 
+      <app-button
         v-if="!loading" 
         class="button"
+        yellow
         @click="$emit('load-more')"
       >
-        Показать ещё
+        show more
       </app-button>
     </div>
   </div>
@@ -105,12 +106,13 @@ export default defineComponent({
     align-items: flex-start;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 10px;
+    column-gap: 10px;
+    row-gap: 20px;
   }
   .content__item {
     max-width: 180px;
     width: 100%;
-    height: 400px;
+    height: 340px;
   }
   .button-item {
     margin-top: 40px;

@@ -87,6 +87,7 @@ export default defineComponent({
   <div class="search">
     <app-button 
       v-if="!isVisible"
+      default
       @click="openMultiselect"
     >
       <icon-search class="icon-search" />

@@ -1,15 +1,49 @@
 <script>
 import { defineComponent } from 'vue';
-import { searchMulti } from '@/api/search/search'; // Предполагаем, что это ваш метод поиска
+import { searchMulti } from '@/api/search/search';
+import { fetchMovieGenres } from '@/api/movies/genresMovies';
+import { fetchTvGenres } from '@/api/series/genresSeries';
+import AppContentCard from '@/components/Base/AppContentCard.vue';
+import AppActorCard from '@/components/Base/AppActorCard.vue';
+import AppTitle from '@/components/Base/AppTitle.vue';
 
 export default defineComponent({
   name: 'SearchResultView',
+
+  components: {
+    AppContentCard,
+    AppActorCard,
+    AppTitle
+  },
 
   data() {
     return {
       searchQuery: '',  // Строка запроса
       searchResults: [], // Результаты поиска
+      genresMap: {}, // Карта жанров
     };
+  },
+
+  computed: {
+    movieImages() {
+      const baseImageUrl = 'https://image.tmdb.org/t/p/w500';
+      const images = {};
+
+      if (this.searchResults.length) {
+        this.searchResults.forEach(movie => {
+          images[movie.id] = movie.poster_path ? `${baseImageUrl}${movie.poster_path}` : '';
+        });
+      }
+
+      return images;
+    },
+    filteredMovies() {
+      return this.searchResults.filter(result => result.media_type === 'movie' || result.media_type === 'tv');
+    },
+    
+    filteredActors() {
+      return this.searchResults.filter(result => result.media_type === 'person');
+    },
   },
 
   watch: {
@@ -28,6 +62,9 @@ export default defineComponent({
     if (this.searchQuery) {
       await this.performSearch();
     }
+
+    // Получаем жанры
+    await this.getGenres();
   },
 
   methods: {
@@ -37,6 +74,22 @@ export default defineComponent({
         const response = await searchMulti(this.searchQuery);
         this.searchResults = response.results; // Сохраняем результаты
       }
+    },
+
+    async getGenres() {
+      const movieGenres = await fetchMovieGenres();
+      const tvGenres = await fetchTvGenres();
+
+      this.genresMap = {
+        ...movieGenres.genres.reduce((map, genre) => {
+          map[genre.id] = genre.name;
+          return map;
+        }, {}),
+        ...tvGenres.genres.reduce((map, genre) => {
+          map[genre.id] = genre.name;
+          return map;
+        }, {})
+      };
     }
   }
 });
@@ -44,17 +97,74 @@ export default defineComponent({
 
 <template>
   <div class="search-result">
-    <h2>Результаты поиска для "{{ searchQuery }}"</h2>
-    <ul v-if="searchResults.length">
-      <li v-for="result in searchResults" :key="result.id">
-        <h3>{{ result.name || result.title }}</h3>
-        <div>{{ result.media_type }}</div>
+    <app-title>
+      Search results for "{{ searchQuery }}"
+    </app-title>
+    <ul v-if="filteredMovies.length" class="search-result__list">
+      <li 
+        v-for="result in filteredMovies" 
+        :key="result.id"
+        class="search-result__item"
+      >
+        <app-content-card
+          v-if="result.media_type === 'movie' || result.media_type === 'tv'"
+          :movie="result.media_type === 'movie' ? result : null"
+          :show="result.media_type === 'tv' ? result : null"
+          :image-url="movieImages[result.id]"
+          :genres-map="genresMap"
+        />
       </li>
     </ul>
     <p v-else>Нет результатов для отображения.</p>
   </div>
+
+  <div class="search-result__people people">
+    <app-title>
+      Actors:
+    </app-title>
+    <ul v-if="filteredActors.length" class="people__list">
+      <li 
+        v-for="result in filteredActors" 
+        :key="result.id"
+        class="people__item"
+      >
+        <app-actor-card
+          v-if="result.media_type === 'person'"
+          :actor="result.media_type === 'person' ? result : null"
+          :image-url="movieImages[result.id]"
+        />
+      </li>
+    </ul>
+    <p v-else>No actors found.</p>
+  </div>
 </template>
 
 <style scoped>
+  .search-result {
+    margin-top: 40px;
+  }
+  .search-result__list {
+    margin-top: 32px;
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .search-result__item {
+    height: 340px;
+  }
 
+  .people {
+    margin-top: 40px;
+  }
+  .people__list {
+    margin-top: 32px;
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .people__item {
+    height: auto;
+  }
 </style>

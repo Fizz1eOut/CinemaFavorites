@@ -15,16 +15,15 @@ export default defineComponent({
 
 <style scoped>
 .title {
-  font-family: "Source Code Pro", monospace;
+  font-family: "Raleway", sans-serif;
   font-weight: 400;
   font-size: 32px;
-  color: var(--color-black);
+  color: var(--color-white);
   }  
 @media (max-width: 499.98px) {
   .title {
-    font-size: 24px;
-    font-weight: 400;
-    color: var(--color-black);
+    font-weight: 600;
+    font-size: 22px;
   }  
 }
 </style>

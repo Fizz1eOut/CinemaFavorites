@@ -24,6 +24,7 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    
     genresMap: {
       type: Object,
       required: true,
@@ -70,7 +71,12 @@ export default defineComponent({
         :src="imageUrl"
         :alt="movie.title"
       >
-      <p v-else class="card__no-poster">There is no poster</p>
+      <img
+        v-else
+        class="card__no-poster"
+        src="https://salonlfc.com/wp-content/uploads/2018/01/image-not-found-scaled-1150x647.png"
+        alt="Image not available"
+      >
       <h3 class="card__title">{{ movie.title }}</h3>
     </div>
     <div class="card__genre">{{ genreNames }}</div>
@@ -90,7 +96,12 @@ export default defineComponent({
         :src="imageUrl"
         :alt="show.title"
       >
-      <p v-else class="card__no-poster">There is no poster</p>
+      <img
+        v-else
+        class="card__no-poster"
+        src="https://salonlfc.com/wp-content/uploads/2018/01/image-not-found-scaled-1150x647.png"
+        alt="Image not available"
+      >
       <h3 class="card__title">{{ show.name }}</h3>
     </div>
     <div class="card__genre">{{ genreNames }}</div>
@@ -120,43 +131,41 @@ export default defineComponent({
   .card__img {
     /* max-width: 180px;
     width: 100%; */
-    height: 270px;
+    height: 225px;
+    object-fit: cover;
+    border-radius: 15px;
   }
   .card__no-poster {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-style: italic;
-    color: gray;
     max-width: 180px;
     width: 100%;
-    min-height: 270px;
-    margin-top: 8px;
+    height: 225px;
     font-weight: 600;
     font-size: 17px;
     letter-spacing: 0.01em;
+    object-fit: cover;
+    border-radius: 15px;
   }
   .card__title {
     margin-top: 8px;
     font-weight: 600;
-    font-size: 17px;
+    font-size: 15px;
     letter-spacing: 0.01em;
     color: var(--color-white);
   }
   .card__genre {
     margin-top: 3px;
     font-weight: 400;
-    font-size: 15px;
+    font-size: 13px;
     letter-spacing: 0em;
-    color: var(--color-white);
+    color: rgba(255, 255, 255, 0.8);
     font-family: "Raleway", sans-serif;
   }
   .card__release {
     margin-top: 2px;
     font-weight: 400;
-    font-size: 15px;
+    font-size: 13px;
     letter-spacing: 0em;
-    color: var(--color-white);
+    color: rgba(255, 255, 255, 0.8);
     font-family: "Raleway", sans-serif;
     white-space: nowrap;
   }
