@@ -182,4 +182,21 @@ export default defineComponent({
     color: var(--color-light-blue);
     padding: 5px;
   }
+  @media (max-width: 412px) {
+    .card {
+      max-width: 150px;
+    }
+    .card__img {
+      height: auto;
+    }
+    .card__no-poster {
+      max-width: 100%;
+      min-height: 390px;
+    }
+  }
+  @media (max-width: 352px) {
+    .card {
+      max-width: 250px;
+    }
+  }
 </style>

@@ -147,11 +147,15 @@ export default defineComponent({
     margin-top: 32px;
     display: flex;
     align-items: flex-start;
+
     flex-wrap: wrap;
     gap: 20px;
   }
   .search-result__item {
-    height: 340px;
+    flex: 1 1 180px;
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
   }
 
   .people {
@@ -166,5 +170,13 @@ export default defineComponent({
   }
   .people__item {
     height: auto;
+  }
+  @media (max-width: 412px) {
+    .search-result__list {
+      justify-content: center;
+    }
+    .search-result__item {
+      flex: none;
+    }
   }
 </style>

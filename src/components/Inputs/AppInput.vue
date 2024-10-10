@@ -95,5 +95,8 @@ export default defineComponent({
     .input {
       padding: 8px 12px;
     }
+    .icon-input {
+      display: none;
+    }
   } 
 </style>

@@ -104,15 +104,16 @@ export default defineComponent({
   .content__list {
     display: flex;
     align-items: flex-start;
-    justify-content: space-between;
+    justify-content: center;
     flex-wrap: wrap;
     column-gap: 10px;
     row-gap: 20px;
   }
   .content__item {
-    max-width: 180px;
-    width: 100%;
-    height: 340px;
+    flex: 1 1 180px;
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
   }
   .button-item {
     margin-top: 40px;
@@ -123,5 +124,10 @@ export default defineComponent({
   .button {
     max-width: 200px;
     width: 100%;
+  }
+  @media (max-width: 499px) {
+    .content__item {
+      flex: none;
+    }
   }
 </style>

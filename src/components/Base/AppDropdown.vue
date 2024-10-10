@@ -44,7 +44,7 @@ export default defineComponent({
   .dropdown {
     position: absolute;
     left: 0px;
-    z-index: 2;
+    z-index: 11;
     top: 100%;
     background-color: var(--color-dark-blue);
     border: 1px solid #08325C;
