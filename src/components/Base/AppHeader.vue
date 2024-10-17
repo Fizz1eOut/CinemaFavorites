@@ -2,9 +2,8 @@
 import { defineComponent } from 'vue';
 import AppContainer from '@/components/Base/AppContainer.vue';
 import AppNav from '@/components/Base/AppNav.vue';
-import IconFavorites from '@/components/Icons/IconFavorites.vue';
-import AppButton from '@/components/Base/AppButton.vue';
 import AppSearch from '@/components/Base/AppSearch.vue';
+import AppFavorites from '@/components/Base/AppFavorites.vue'
 
 export default defineComponent({
   name: 'AppHeader',
@@ -12,9 +11,8 @@ export default defineComponent({
   components: {
     AppContainer,
     AppNav,
-    IconFavorites,
-    AppButton,
-    AppSearch
+    AppSearch,
+    AppFavorites
   }
 
 });
@@ -38,12 +36,9 @@ export default defineComponent({
           <app-search />
 
           <div class="header__favorites favorites">
-            <router-link to="/">
-              <app-button class="search__button" default>
-                <icon-favorites class="icon-favorites" />
-              </app-button>
+            <router-link to="/favorites">
+              <app-favorites />
             </router-link>
-            <span class="favorites__quantity">0</span>
           </div>
         </div>
       </div>
@@ -99,9 +94,6 @@ export default defineComponent({
     background-color: var(--color-blue);
   }
   @media (max-width: 768px) {
-    .favorites {
-      display: none;
-    }
     .header__body {
       gap: 0;
     }
