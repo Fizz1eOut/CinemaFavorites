@@ -1,12 +1,19 @@
 <script>
 import { defineComponent } from 'vue';
 import AppUnderlay from '@/components/Base/AppUnderlay.vue'
+import IconFavorites from '@/components/Icons/IconFavorites.vue';
+import AppButton from '@/components/Base/AppButton.vue';
+import { useFavoritesStore } from '@/store/favorites.js';
+import IconFavoritesDisabled from '@/components/Icons/IconFavoritesDisabled.vue';
 
 export default defineComponent({
   name: 'AppContentCard',
 
   components: {
     AppUnderlay,
+    IconFavorites,
+    AppButton,
+    IconFavoritesDisabled
   },
 
   props: {
@@ -53,12 +60,25 @@ export default defineComponent({
     // Округляем рейтинг до одного знака после запятой
     roundedRating() {
       return this.content.vote_average.toFixed(1);
-    }
+    },
+
+    // Используем store для проверки, добавлен ли фильм в избранное
+    isInFavorites() {
+      const favoritesStore = useFavoritesStore();
+      return favoritesStore.isFavorite(this.content.id);
+    },
   },
   
-  // methods: {
-  
-  // }
+  methods: {
+    toggleFavorite() {
+      const favoritesStore = useFavoritesStore();
+      if (this.isInFavorites) {
+        favoritesStore.removeFromFavorites(this.content);
+      } else {
+        favoritesStore.addToFavorites(this.content);
+      }
+    },
+  },
 });
 </script>
 
@@ -77,14 +97,30 @@ export default defineComponent({
         src="https://salonlfc.com/wp-content/uploads/2018/01/image-not-found-scaled-1150x647.png"
         alt="Image not available"
       >
-      <h3 class="card__title">{{ movie.title }}</h3>
     </div>
+    <h3 class="card__title">{{ movie.title }}</h3>
     <div class="card__genre">{{ genreNames }}</div>
     <div class="card__release">Release date: {{ movie.release_date }}</div>
     <div class="card__rating">
       <app-underlay>
         <div class="rating">{{ roundedRating }}</div>
       </app-underlay>
+    </div>
+    <div class="card__favorites">
+      <app-button
+        default
+        @click="toggleFavorite"
+      >
+        <app-underlay class="favorites-underlay">
+          <transition>
+            <template v-if="isInFavorites">
+              <icon-favorites-disabled class="favorites-icon__disabled" />
+            </template>
+    
+            <icon-favorites v-else class="favorites-icon" />
+          </transition>
+        </app-underlay>
+      </app-button>
     </div>
   </div>
 
@@ -110,6 +146,16 @@ export default defineComponent({
       <app-underlay>
         <div class="rating">{{ roundedRating }}</div>
       </app-underlay>
+    </div>
+    <div class="card__favorites">
+      <app-button
+        default
+        @click="toggleFavorite"
+      >
+        <app-underlay class="favorites-underlay">
+          <icon-favorites class="favorites-icon" :class="{ 'is-favorite': isInFavorites }" />
+        </app-underlay>
+      </app-button>
     </div>
   </div>
 </template>
@@ -181,6 +227,38 @@ export default defineComponent({
     letter-spacing: 0em;
     color: var(--color-light-blue);
     padding: 5px;
+  }
+  .card__favorites {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1;
+  }
+  .favorites-underlay {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .favorites-icon {
+    width: 20px;
+    height: 18px;
+    fill: var(--color-light-blue);
+  }
+  .favorites-icon__disabled {
+    width: 20px;
+    height: 18px;
+    fill: var(--color-light-blue);
+  }
+  .v-enter-active,
+  .v-leave-active {
+    transition: opacity 0.1s ease-in-out;
+  }
+
+  .v-enter-from,
+  .v-leave-to {
+    opacity: 0;
   }
   @media (max-width: 412px) {
     .card {

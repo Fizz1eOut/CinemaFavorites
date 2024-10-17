@@ -49,6 +49,7 @@ export default defineComponent({
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 6px;
     font-weight: 400;
     font-size: 17px;
     letter-spacing: 0.01em;
@@ -91,7 +92,7 @@ export default defineComponent({
     padding: 0;
     border-radius: 0;
     color: var(--color-white);
-    background-color: var(--color-background);
+    background-color: transparent;
     cursor: pointer;
   }
 </style>
