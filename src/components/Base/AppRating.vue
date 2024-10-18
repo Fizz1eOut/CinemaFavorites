@@ -21,8 +21,8 @@ export default defineComponent({
 
 <template>
   <div class="rating">
-    <slot />
     {{ roundedRating }}
+    <slot />
   </div>
 </template>
 

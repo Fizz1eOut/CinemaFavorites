@@ -83,10 +83,10 @@ export default defineComponent({
                 <h3 class="card__title">{{ movie.title || movie.name }}</h3>
                 <div class="card__row">
                   <div class="card__rating">
+                    <icon-star class="icon-star" />
                     <app-rating :rating="movie.vote_average">
-                      <icon-star class="icon-star" />
+                      /10
                     </app-rating>
-                    /10
                   </div>
                 </div>
               </div>
@@ -184,6 +184,7 @@ export default defineComponent({
     font-weight: 400;
     font-size: 17px;
     color: var(--color-white);
+    min-width: 100px;
   }
   .card__info {
     max-width: 240px;
