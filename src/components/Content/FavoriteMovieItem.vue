@@ -7,6 +7,7 @@ import AppUnderlay from '@/components/Base/AppUnderlay.vue';
 import IconStar from '@/components/Icons/IconStar.vue';
 import { useGenresStore } from '@/store/genres.js';
 import AppTrailer from '@/components/Base/AppTrailer.vue';
+import AppRating from '@/components/Base/AppRating.vue';
 
 export default defineComponent({
   name: 'FavoriteMovieItem',
@@ -17,7 +18,8 @@ export default defineComponent({
     AppContainer,
     AppUnderlay,
     IconStar,
-    AppTrailer
+    AppTrailer,
+    AppRating
   },
 
   props: {
@@ -81,8 +83,10 @@ export default defineComponent({
                 <h3 class="card__title">{{ movie.title || movie.name }}</h3>
                 <div class="card__row">
                   <div class="card__rating">
-                    <icon-star class="icon-star" />
-                    {{ roundedRating }}/10
+                    <app-rating :rating="movie.vote_average">
+                      <icon-star class="icon-star" />
+                    </app-rating>
+                    /10
                   </div>
                 </div>
               </div>
