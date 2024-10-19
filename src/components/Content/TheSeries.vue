@@ -19,7 +19,7 @@ export default defineComponent({
 
   data() {
     return {
-      Series: [], // Массив для хранения фильмов
+      series: [], // Массив для хранения фильмов
       errorMessage: '',  // Сообщение об ошибке
       currentPage: 1,  // Текущая страница для пагинации
       isLoading: false,  // Флаг загрузки
@@ -44,8 +44,8 @@ export default defineComponent({
       const baseImageUrl = 'https://image.tmdb.org/t/p/w500';
       const images = {};
 
-      if (this.Series.length) {
-        this.Series.forEach(series => {
+      if (this.series.length) {
+        this.series.forEach(series => {
           images[series.id] = series.poster_path ? `${baseImageUrl}${series.poster_path}` : '';
         });
       }
@@ -70,11 +70,11 @@ export default defineComponent({
 
     filteredSeries() {
       // Фильтруем сериалы по выбранным жанрам и годам
-      return this.Series.filter(series => {
+      return this.series.filter(series => {
         const seriesGenres = series.genre_ids.map(id => this.genresMap[id]);
         const matchesGenre = !Array.isArray(this.selectedGenres) || this.selectedGenres.length === 0 || this.selectedGenres.some(genre => seriesGenres.includes(genre));
 
-        const seriesYear = series.first_air_date.substring(0, 4); // Для сериалов используем first_air_date
+        const seriesYear = series.release_date.substring(0, 4);
         const matchesYear = !Array.isArray(this.selectedYears) || this.selectedYears.length === 0 || this.selectedYears.includes(seriesYear);
 
         return matchesGenre && matchesYear;
@@ -99,21 +99,21 @@ export default defineComponent({
       // Обновляем фильтр по жанрам, если изменен
       this.updateQueryParams({ genres: newGenres });
       this.currentPage = 1; // Сбрасываем страницу
-      this.Series = [];
+      this.series = [];
     },
 
     selectedYears(newYears) {
       // Обновляем фильтр по годам, если изменен
       this.updateQueryParams({ years: newYears });
       this.currentPage = 1; // Сбрасываем страницу
-      this.Series = []; // Очищаем текущий список фильмов
+      this.series = []; // Очищаем текущий список фильмов
     },
 
     selectedCountry(newCountry) {
       // Обновляем фильтр по странам, если изменен
       this.updateQueryParams({ country: newCountry });
       this.currentPage = 1; // Сбрасываем страницу
-      this.Series = []; // Очищаем текущий список фильмов
+      this.series = []; // Очищаем текущий список фильмов
     },
 
     // Применяем фильтры из URL при изменении маршрута
@@ -126,7 +126,7 @@ export default defineComponent({
       // Обновляем параметры URL при изменении сортировки
       this.updateQueryParams({ sort: newSortBy });
       this.currentPage = 1; // Сбрасываем страницу
-      this.Series = []; // Очищаем текущий список сериалов
+      this.series = []; // Очищаем текущий список сериалов
     }
   },
 
@@ -152,7 +152,7 @@ export default defineComponent({
         };
 
         const data = await fetchSeries(this.currentPage, filters); // Используем новый запрос для сериалов
-        this.Series = [...this.Series, ...data.results];
+        this.series = [...this.series, ...data.results];
         this.currentPage++;
       } catch (error) {
         this.errorMessage = 'Не удалось получить список сериалов.';
@@ -277,7 +277,7 @@ export default defineComponent({
   </app-filter>
 
   <app-filter-card 
-    :series="sortedSeries" 
+    :movies="sortedSeries" 
     :image-url="seriesImages" 
     :genres-map="genresMap" 
     :loading="isLoading" 

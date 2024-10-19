@@ -1,6 +1,6 @@
 import { fetchData } from '@/modules/http';
 
-export const fetchSeries = (page = 1, filters = {}) => {
+export const fetchSeries = async (page = 1, filters = {}) => {
   const { genres, years, country } = filters;
   let url = `${import.meta.env.VITE_BASE_URL}discover/tv?language=en-US&page=${page}&sort_by=popularity.desc&api_key=${import.meta.env.VITE_API_KEY}`;
 
@@ -18,5 +18,21 @@ export const fetchSeries = (page = 1, filters = {}) => {
     url += `&with_origin_country=${country}`;
   }
 
-  return fetchData(url);
+  const data = await fetchData(url);
+
+  // Ремаппинг данных для сериалов
+  const remappedData = data.results.map(series => ({
+    id: series.id,
+    title: series.name,
+    release_date: series.first_air_date,
+    genre_ids: series.genre_ids,
+    vote_average: series.vote_average,
+    poster_path: series.poster_path,
+    overview: series.overview
+  }));
+
+  return {
+    ...data,
+    results: remappedData // Заменяем результаты ремаппингом
+  };
 };

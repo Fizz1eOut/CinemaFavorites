@@ -22,11 +22,6 @@ export default defineComponent({
       default: null
     },
 
-    show: {
-      type: Object,
-      default: null
-    },
-
     imageUrl: {
       type: String,
       required: true,
@@ -44,14 +39,9 @@ export default defineComponent({
   // },
 
   computed: {
-    // Проверяем, какой пропс был передан и используем его
-    content() {
-      return this.movie || this.show;
-    },
-
     // Преобразуем genre_ids в строку названий жанров
     genreNames() {
-      return this.content.genre_ids
+      return this.movie.genre_ids
         .map(id => this.genresMap[id])
         .filter(Boolean)
         .join(', ');
@@ -59,13 +49,13 @@ export default defineComponent({
 
     // Округляем рейтинг до одного знака после запятой
     roundedRating() {
-      return this.content.vote_average.toFixed(1);
+      return this.movie.vote_average.toFixed(1);
     },
 
     // Используем store для проверки, добавлен ли фильм в избранное
     isInFavorites() {
       const favoritesStore = useFavoritesStore();
-      return favoritesStore.isFavorite(this.content.id);
+      return favoritesStore.isFavorite(this.movie.id);
     },
   },
   
@@ -73,9 +63,9 @@ export default defineComponent({
     toggleFavorite() {
       const favoritesStore = useFavoritesStore();
       if (this.isInFavorites) {
-        favoritesStore.removeFromFavorites(this.content);
+        favoritesStore.removeFromFavorites(this.movie);
       } else {
-        favoritesStore.addToFavorites(this.content);
+        favoritesStore.addToFavorites(this.movie);
       }
     },
   },
@@ -109,7 +99,7 @@ export default defineComponent({
     <div class="card__favorites">
       <app-button
         default
-        @click="toggleFavorite"
+        @click.prevent="toggleFavorite"
       >
         <app-underlay class="favorites-underlay">
           <transition>
@@ -119,41 +109,6 @@ export default defineComponent({
     
             <icon-favorites v-else class="favorites-icon" />
           </transition>
-        </app-underlay>
-      </app-button>
-    </div>
-  </div>
-
-  <div v-if="show" class="card">
-    <div class="group">
-      <img
-        v-if="imageUrl"
-        class="card__img"
-        :src="imageUrl"
-        :alt="show.title"
-      >
-      <img
-        v-else
-        class="card__no-poster"
-        src="https://salonlfc.com/wp-content/uploads/2018/01/image-not-found-scaled-1150x647.png"
-        alt="Image not available"
-      >
-      <h3 class="card__title">{{ show.name }}</h3>
-    </div>
-    <div class="card__genre">{{ genreNames }}</div>
-    <div class="card__release">Release date: {{ show.first_air_date }}</div>
-    <div class="card__rating">
-      <app-underlay>
-        <div class="rating">{{ roundedRating }}</div>
-      </app-underlay>
-    </div>
-    <div class="card__favorites">
-      <app-button
-        default
-        @click="toggleFavorite"
-      >
-        <app-underlay class="favorites-underlay">
-          <icon-favorites class="favorites-icon" :class="{ 'is-favorite': isInFavorites }" />
         </app-underlay>
       </app-button>
     </div>
@@ -240,15 +195,16 @@ export default defineComponent({
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 50%;
   }
   .favorites-icon {
     width: 20px;
-    height: 18px;
+    height: 20px;
     fill: var(--color-light-blue);
   }
   .favorites-icon__disabled {
-    width: 20px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     fill: var(--color-light-blue);
   }
   .v-enter-active,

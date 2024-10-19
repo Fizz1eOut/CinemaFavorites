@@ -75,12 +75,12 @@ export default defineComponent({
       <app-container size="md">
         <div class="favorite__card card">
           <div class="card__image">
-            <img :src="movieImage" :alt="movie.title || movie.name">
+            <img :src="movieImage" :alt="movie.title">
           </div>
           <div class="card__body">
             <div class="card__content">
               <div class="card__wrapper">
-                <h3 class="card__title">{{ movie.title || movie.name }}</h3>
+                <h3 class="card__title">{{ movie.title }}</h3>
                 <div class="card__row">
                   <div class="card__rating">
                     <icon-star class="icon-star" />
@@ -91,7 +91,7 @@ export default defineComponent({
                 </div>
               </div>
               <div class="card__genres">
-                <span class="card__release">{{ movie.release_date || movie.first_air_date }}</span>,
+                <span class="card__release">{{ movie.release_date }}</span>,
                 {{ genreNames }}
               </div>
               <p class="card__overview">{{ movie.overview }}</p>
