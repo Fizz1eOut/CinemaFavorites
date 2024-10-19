@@ -23,7 +23,7 @@ export default defineComponent({
 <template>
   <app-header />
 
-  <main>
+  <main class="main">
     <app-container size="sm">
       <router-view />
     </app-container>
@@ -31,5 +31,12 @@ export default defineComponent({
 </template>
 
 <style>
-
+  .main {
+    padding-bottom: 87px;
+  }
+  @media (max-width: 768px) {
+    .main {
+      padding-bottom: 77px;
+    }
+  }
 </style>

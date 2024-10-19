@@ -3,7 +3,10 @@ import { defineComponent } from 'vue';
 import AppContainer from '@/components/Base/AppContainer.vue';
 import AppNav from '@/components/Base/AppNav.vue';
 import AppSearch from '@/components/Base/AppSearch.vue';
-import AppFavorites from '@/components/Base/AppFavorites.vue'
+import AppFavorites from '@/components/Base/AppFavorites.vue';
+import AppNavMobile from '@/components/Base/AppNavMobile.vue';
+
+const mediaQueryList = window.matchMedia('(max-width: 768px)');
 
 export default defineComponent({
   name: 'AppHeader',
@@ -12,7 +15,33 @@ export default defineComponent({
     AppContainer,
     AppNav,
     AppSearch,
-    AppFavorites
+    AppFavorites,
+    AppNavMobile,
+  },
+
+  data() {
+    return {
+      isMobile: false,
+    };
+  },
+
+  mounted() {
+    // Подписываемся на событие изменения медиазапроса при монтировании компонента
+    this.handleMediaChange(mediaQueryList); // Инициализация значения isMobile при монтировании компонента
+    mediaQueryList.addEventListener('change', this.handleMediaChange);
+  },
+
+  beforeUnmount() {
+    // Отписываемся от события изменения медиазапроса при размонтировании компонента
+    mediaQueryList.removeEventListener('change', this.handleMediaChange);
+  },
+
+  methods: {
+    // Обработчик изменения состояния медиазапроса
+    handleMediaChange(event) {
+      // Обновляем флаг isMobile в соответствии с состоянием медиазапроса
+       this.isMobile = event.matches;
+    }
   }
 
 });
@@ -29,7 +58,8 @@ export default defineComponent({
             </router-link>
           </div>
 
-          <app-nav class="nav" />
+          <app-nav v-if="!isMobile" class="nav" />
+          <app-nav-mobile v-if="isMobile" class="nav-mobile" />
         </div>
 
         <div class="header__item">
@@ -70,32 +100,15 @@ export default defineComponent({
     justify-content: space-between;
     gap: 20px;
   }
-
-  .favorites {
-    position: relative;
-  }
-  .icon-favorites {
-    width: 24px;
-    height: 24px;
-    fill: var(--color-white);
-  }
-  .favorites__quantity {
-    position: absolute;
-    right: -10px;
-    top: -5px;
-    border-radius: 100%;
-    color: var(--color-white);
-    font-size: 13px;
-    height: 18px;
-    width: 18px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--color-blue);
-  }
   @media (max-width: 768px) {
     .header__body {
       gap: 0;
+    }
+    .header__wrapper {
+      max-width: 100%;
+    }
+    .header__favorites {
+      display: none;
     }
   }
 </style>

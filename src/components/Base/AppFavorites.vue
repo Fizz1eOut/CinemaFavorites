@@ -34,6 +34,7 @@ export default defineComponent({
 <style scoped>
   .favorites {
     position: relative;
+    max-width: 24px;
   }
   .icon-favorites {
     width: 24px;
@@ -53,11 +54,5 @@ export default defineComponent({
     align-items: center;
     justify-content: center;
     background-color: var(--color-blue);
-  }
-
-  @media (max-width: 768px) {
-    .favorites {
-      display: none;
-    }
   }
 </style>

@@ -15,8 +15,8 @@ export default defineComponent({
 
 <style scoped>
   .underlay {
-    border-radius: 50%;
-    backdrop-filter: blur(2px);
-    background: rgba(1, 26, 56, 0.8);
+    border-radius: 15px;
+    backdrop-filter: blur(4px);
+    background: rgba(2, 41, 79, 0.8);
   }
 </style>
