@@ -20,15 +20,24 @@ export default defineComponent({
   },
   methods: {
     async showTrailer() {
+      // Открываем новую вкладку заранее, до асинхронного запроса
+      const newTab = window.open('', '_blank');
+
       try {
         const trailerUrl = await fetchMovieTrailer(this.movie.id);
+
         if (trailerUrl) {
-          window.open(trailerUrl, '_blank'); // Открываем трейлер в новой вкладке
+          // Если трейлер найден, перенаправляем новую вкладку на URL трейлера
+          newTab.location.href = trailerUrl;
         } else {
+          // Если трейлер не найден, закрываем вкладку и показываем сообщение
+          newTab.close();
           alert('Sorry, trailer not found.');
         }
       } catch (error) {
         console.error('Ошибка при получении трейлера:', error);
+        // Закрываем вкладку в случае ошибки и показываем сообщение
+        newTab.close();
         alert('There was an error loading the trailer.');
       }
     }
