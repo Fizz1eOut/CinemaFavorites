@@ -138,6 +138,8 @@ export default defineComponent({
     display: flex;
     align-items: flex-start;
     gap: 10px;
+    justify-content: space-between;
+    width: 100%;
   }
   .card__image img {
     max-width: 150px;

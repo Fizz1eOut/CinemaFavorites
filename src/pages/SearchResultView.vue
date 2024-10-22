@@ -38,6 +38,7 @@ export default defineComponent({
       return images;
     },
     filteredMovies() {
+      console.log(this.searchResults)
       return this.searchResults.filter(result => result.media_type === 'movie' || result.media_type === 'tv');
     },
     
@@ -107,15 +108,13 @@ export default defineComponent({
         class="search-result__item"
       >
         <app-content-card
-          v-if="result.media_type === 'movie' || result.media_type === 'tv'"
-          :movie="result.media_type === 'movie' ? result : null"
-          :show="result.media_type === 'tv' ? result : null"
+          :movie="result"
           :image-url="movieImages[result.id]"
           :genres-map="genresMap"
         />
       </li>
     </ul>
-    <p v-else>Нет результатов для отображения.</p>
+    <p v-else>There are no results to display.</p>
   </div>
 
   <div class="search-result__people people">

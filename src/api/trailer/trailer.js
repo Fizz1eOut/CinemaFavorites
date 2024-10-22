@@ -15,7 +15,7 @@ export const fetchMovieTrailer = async (movieId) => {
       return null;
     }
   } catch (error) {
-    console.error('Ошибка при запросе трейлера:', error);
+    console.warn(`Трейлер для фильма с ID ${movieId} не найден (404).`);
     throw error;
   }
 };
