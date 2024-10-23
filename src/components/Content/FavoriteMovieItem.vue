@@ -6,7 +6,7 @@ import AppContainer from '@/components/Base/AppContainer.vue';
 import AppUnderlay from '@/components/Base/AppUnderlay.vue';
 import IconStar from '@/components/Icons/IconStar.vue';
 import { useGenresStore } from '@/store/genres.js';
-import AppTrailer from '@/components/Base/AppTrailer.vue';
+import AppTrailerModal from '@/components/Base/AppTrailerModal.vue';
 import AppRating from '@/components/Base/AppRating.vue';
 
 export default defineComponent({
@@ -18,7 +18,7 @@ export default defineComponent({
     AppContainer,
     AppUnderlay,
     IconStar,
-    AppTrailer,
+    AppTrailerModal,
     AppRating
   },
 
@@ -106,7 +106,7 @@ export default defineComponent({
               </div>
 
               <div class="card__buttons">
-                <app-trailer :movie="movie" />
+                <app-trailer-modal :movie="movie" />
               
                 <app-button yellow class="button-favorites" @click="removeMovie">
                   <icon-favorites-disabled class="icon-favorites__disabled" />
