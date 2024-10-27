@@ -2,7 +2,7 @@
 import { defineComponent } from 'vue';
 import AppHeader from '@/components/Base/AppHeader.vue';
 import AppContainer from '@/components/Base/AppContainer.vue';
-import { useFavoritesStore } from '@/store/favorites.js';
+import { useGenresStore } from '@/store/genres.js';
 
 export default defineComponent({
   name: 'AppVue',
@@ -11,11 +11,15 @@ export default defineComponent({
     AppContainer,
     AppHeader
   },
-
+  
   mounted() {
-    // Загружаем избранные фильмы при инициализации приложения
-    const favoritesStore = useFavoritesStore();
-    favoritesStore.loadFromLocalStorage(); // Загружаем данные из localStorage
+    const genresStore = useGenresStore();
+
+    // Загружаем жанры, если они еще не загружены
+    if (Object.keys(genresStore.genresMap).length === 0) {
+      genresStore.loadMovieGenres();
+      genresStore.loadTvGenres();
+    }
   },
 });
 </script>

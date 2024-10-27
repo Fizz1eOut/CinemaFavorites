@@ -44,21 +44,6 @@ export default defineComponent({
         .filter(Boolean)
         .join(', ');
     },
-
-    // Округляем рейтинг до одного знака после запятой
-    roundedRating() {
-      return this.movie.vote_average.toFixed(1);
-    },
-  },
-
-  mounted() {
-    const genresStore = useGenresStore();
-
-    // Загружаем жанры, если они еще не загружены
-    if (Object.keys(genresStore.genresMap).length === 0) {
-      genresStore.loadMovieGenres();
-      genresStore.loadTvGenres();
-    }
   },
 
   methods: {
@@ -101,7 +86,9 @@ export default defineComponent({
               <div class="rating__shell">
                 <div class="card__rating">
                   <icon-star class="icon-star" />
-                  {{ roundedRating }}/10
+                  <app-rating :rating="movie.vote_average">
+                    /10
+                  </app-rating>
                 </div>
               </div>
 

@@ -5,6 +5,7 @@ import AppNav from '@/components/Base/AppNav.vue';
 import AppSearch from '@/components/Base/AppSearch.vue';
 import AppFavorites from '@/components/Base/AppFavorites.vue';
 import AppNavMobile from '@/components/Base/AppNavMobile.vue';
+import { useFavoritesStore } from '@/store/favorites.js';
 
 const mediaQueryList = window.matchMedia('(max-width: 768px)');
 
@@ -29,6 +30,10 @@ export default defineComponent({
     // Подписываемся на событие изменения медиазапроса при монтировании компонента
     this.handleMediaChange(mediaQueryList); // Инициализация значения isMobile при монтировании компонента
     mediaQueryList.addEventListener('change', this.handleMediaChange);
+
+    // Загружаем избранные фильмы при инициализации приложения
+    const favoritesStore = useFavoritesStore();
+    favoritesStore.loadFromLocalStorage(); // Загружаем данные из localStorage
   },
 
   beforeUnmount() {
