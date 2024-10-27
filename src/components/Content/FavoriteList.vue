@@ -19,16 +19,6 @@ export default defineComponent({
       return favoritesStore.favorites;
     },
 
-    // Преобразуем genre_ids в строку названий жанров для конкретного фильма
-    genreNames() {
-      return (movie) => {
-        return movie.genre_ids
-          .map(id => this.genresMap[id])
-          .filter(Boolean)
-          .join(', ');
-      };
-    },
-
      // Формируем объект с URL-адресами изображений для избранных фильмов
      movieImages() {
       const baseImageUrl = 'https://image.tmdb.org/t/p/w500';
@@ -68,7 +58,6 @@ export default defineComponent({
         :key="movie.id"
         :movie="movie"
         :movie-image="movieImages[movie.id]"
-        :genre-names="genreNames"
         @remove="removeFromFavorites"
       />
     </ul>

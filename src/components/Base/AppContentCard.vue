@@ -4,6 +4,7 @@ import AppUnderlay from '@/components/Base/AppUnderlay.vue'
 import IconFavorites from '@/components/Icons/IconFavorites.vue';
 import AppButton from '@/components/Base/AppButton.vue';
 import { useFavoritesStore } from '@/store/favorites.js';
+import { useGenresStore } from '@/store/genres.js';
 import IconFavoritesDisabled from '@/components/Icons/IconFavoritesDisabled.vue';
 
 export default defineComponent({
@@ -39,10 +40,11 @@ export default defineComponent({
   // },
 
   computed: {
-    // Преобразуем genre_ids в строку названий жанров
+   // Преобразуем genre_ids в строку названий жанров для конкретного фильма
     genreNames() {
+      const genresStore = useGenresStore();
       return this.movie.genre_ids
-        .map(id => this.genresMap[id])
+        .map((id) => genresStore.genresMap[id])
         .filter(Boolean)
         .join(', ');
     },
