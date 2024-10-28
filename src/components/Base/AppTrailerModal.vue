@@ -13,20 +13,24 @@ export default defineComponent({
     IconPlay,
     AppButton,
     AppModal,
-    TrailerMovie
+    TrailerMovie,
   },
 
   props: {
     movie: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
+    displayMode: {
+      type: String,
+      default: 'modal', // По умолчанию трейлер будет открываться в модальном окне
+    },
   },
 
   data() {
     return {
-      trailerUrl: null,  // Ссылка на трейлер
-      showModal: false   // Состояние для отображения модалки
+      trailerUrl: null, // Ссылка на трейлер
+      showModal: false, // Состояние для отображения модалки
     };
   },
 
@@ -34,7 +38,7 @@ export default defineComponent({
     try {
       const url = await fetchMovieTrailer(this.movie.id);
       if (url) {
-        this.trailerUrl = url;  // Сохраняем URL трейлера, если найден
+        this.trailerUrl = url; // Сохраняем URL трейлера, если найден
       }
     } catch (error) {
       console.log('Trailer not found or another error occurred.', this.movie.title);
@@ -44,31 +48,41 @@ export default defineComponent({
   methods: {
     openModal() {
       if (this.trailerUrl) {
-        this.showModal = true;  // Открываем модалку
+        this.showModal = true; // Открываем модалку
       }
     },
 
     closeModal() {
-      this.showModal = false;  // Закрываем модалку и сбрасываем состояние
-    }
-  }
+      this.showModal = false; // Закрываем модалку и сбрасываем состояние
+    },
+  },
 });
 </script>
 
 <template>
-  <app-button
-    yellow
-    :disabled="!trailerUrl"
-    :class="{ 'disabled-button': !trailerUrl }"
-    @click="openModal"
-  >
-    {{ trailerUrl ? 'Watch Trailer' : 'Trailer Not Found' }}
-    <icon-play v-if="trailerUrl" class="icon-play" />
-  </app-button>
+  <!-- Условный рендеринг на основе displayMode -->
+  <div v-if="displayMode === 'inline'">
+    <!-- При displayMode="inline" показываем трейлер сразу -->
+    <trailer-movie v-if="trailerUrl" :trailer-url="trailerUrl" class="trailer-movie" />
+  </div>
 
-  <app-modal :model-value="showModal" @update:model-value="closeModal">
-    <trailer-movie :trailer-url="trailerUrl" class="trailer-movie" />
-  </app-modal>
+  <div v-else>
+    <!-- При displayMode="modal" показываем кнопку для открытия модального окна -->
+    <app-button
+      yellow
+      :disabled="!trailerUrl"
+      :class="{ 'disabled-button': !trailerUrl }"
+      @click="openModal"
+    >
+      {{ trailerUrl ? 'Watch Trailer' : 'Trailer Not Found' }}
+      <icon-play v-if="trailerUrl" class="icon-play" />
+    </app-button>
+
+    <!-- Модальное окно -->
+    <app-modal :model-value="showModal" @update:model-value="closeModal">
+      <trailer-movie v-if="trailerUrl" :trailer-url="trailerUrl" class="trailer-movie" />
+    </app-modal>
+  </div>
 </template>
 
 <style scoped>

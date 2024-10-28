@@ -14,7 +14,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
+  <div v-if="trailerUrl">
     <iframe
       class="trailer"
       :src="trailerUrl.replace('watch?v=', 'embed/')"
@@ -22,6 +22,9 @@ export default defineComponent({
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       allowfullscreen
     />
+  </div>
+  <div v-else>
+    Trailer not available
   </div>
 </template>
 
