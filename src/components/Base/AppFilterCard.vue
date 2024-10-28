@@ -22,11 +22,6 @@ export default defineComponent({
       default: null
     },
 
-    imageUrl: {
-      type: Object,
-      required: true,
-    },
-
     loading: {
       type: Boolean,
       required: true,
@@ -65,7 +60,6 @@ export default defineComponent({
       >
         <app-content-card 
           :movie="movie" 
-          :image-url="imageUrl[movie.id]"
           :genres-map="genresMap"
         />
       </li>

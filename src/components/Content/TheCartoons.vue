@@ -40,20 +40,6 @@ export default defineComponent({
   },
 
   computed: {
-    // Формирует объект, содержащий URL-адреса изображений для каждого мультфильмафильма.
-    animationImages() {
-      const baseImageUrl = 'https://image.tmdb.org/t/p/w500';
-      const images = {};
-
-      if (this.animations.length) {
-        this.animations.forEach(animation => {
-          images[animation.id] = animation.poster_path ? `${baseImageUrl}${animation.poster_path}` : '';
-        });
-      }
-
-      return images;
-    },
-
     // Возвращаем все жанры, загруженные при инициализации
     uniqueGenres() {
       return this.allGenres;
@@ -279,7 +265,6 @@ export default defineComponent({
 
   <app-filter-card 
     :movies="sortedAnimations"
-    :image-url="animationImages"
     :genres-map="genresMap"
     :loading="isLoading"
     @load-more="getAnimations"

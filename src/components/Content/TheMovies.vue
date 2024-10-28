@@ -39,20 +39,6 @@ export default defineComponent({
   },
 
   computed: {
-    // Формирует объект, содержащий URL-адреса изображений для каждого фильма.
-    movieImages() {
-      const baseImageUrl = 'https://image.tmdb.org/t/p/w500';
-      const images = {};
-
-      if (this.movies.length) {
-        this.movies.forEach(movie => {
-          images[movie.id] = movie.poster_path ? `${baseImageUrl}${movie.poster_path}` : '';
-        });
-      }
-
-      return images;
-    },
-
     // Возвращаем все жанры, загруженные при инициализации
     uniqueGenres() {
       return this.allGenres;
@@ -278,7 +264,6 @@ export default defineComponent({
 
   <app-filter-card 
     :movies="sortedMovies"
-    :image-url="movieImages"
     :genres-map="genresMap"
     :loading="isLoading"
     @load-more="getMovies"

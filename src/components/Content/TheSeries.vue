@@ -39,20 +39,6 @@ export default defineComponent({
   },
 
   computed: {
-    seriesImages() {
-      // Формирует объект, содержащий URL-адреса изображений для каждого сериала.
-      const baseImageUrl = 'https://image.tmdb.org/t/p/w500';
-      const images = {};
-
-      if (this.series.length) {
-        this.series.forEach(series => {
-          images[series.id] = series.poster_path ? `${baseImageUrl}${series.poster_path}` : '';
-        });
-      }
-
-      return images;
-    },
-
     uniqueGenres() {
       // Возвращаем все жанры, загруженные при инициализации
       return this.allGenres;
@@ -278,7 +264,6 @@ export default defineComponent({
 
   <app-filter-card 
     :movies="sortedSeries" 
-    :image-url="seriesImages" 
     :genres-map="genresMap" 
     :loading="isLoading" 
     @load-more="getSeries" 

@@ -8,6 +8,7 @@ import IconStar from '@/components/Icons/IconStar.vue';
 import { useGenresStore } from '@/store/genres.js';
 import AppTrailerModal from '@/components/Base/AppTrailerModal.vue';
 import AppRating from '@/components/Base/AppRating.vue';
+import AppMovieImage from '@/components/Base/AppMovieImage.vue';
 
 export default defineComponent({
   name: 'FavoriteMovieItem',
@@ -19,16 +20,13 @@ export default defineComponent({
     AppUnderlay,
     IconStar,
     AppTrailerModal,
-    AppRating
+    AppRating,
+    AppMovieImage
   },
 
   props: {
     movie: {
       type: Object,
-      required: true,
-    },
-    movieImage: {
-      type: String,
       required: true,
     },
   },
@@ -60,7 +58,7 @@ export default defineComponent({
       <app-container size="md">
         <div class="favorite__card card">
           <div class="card__image">
-            <img :src="movieImage" :alt="movie.title">
+            <app-movie-image :movie="movie" class="card__img" />
           </div>
           <div class="card__body">
             <div class="card__content">
@@ -128,7 +126,7 @@ export default defineComponent({
     justify-content: space-between;
     width: 100%;
   }
-  .card__image img {
+  .card__img {
     max-width: 150px;
     height: 225px;
     border-radius: 15px;
@@ -253,11 +251,11 @@ export default defineComponent({
     .card__image {
       width: 100%;
     }
-    .card__image img {
+    .card__img {
       max-width: 100%;
       width: 100%;
       height: 400px;
-      object-fit: cover;
+      /* object-fit: cover; */
     }
     .icon-star {
       width: 16px;

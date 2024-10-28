@@ -6,6 +6,7 @@ import AppButton from '@/components/Base/AppButton.vue';
 import { useFavoritesStore } from '@/store/favorites.js';
 import { useGenresStore } from '@/store/genres.js';
 import IconFavoritesDisabled from '@/components/Icons/IconFavoritesDisabled.vue';
+import AppMovieImage from '@/components/Base/AppMovieImage.vue';
 
 export default defineComponent({
   name: 'AppContentCard',
@@ -14,7 +15,8 @@ export default defineComponent({
     AppUnderlay,
     IconFavorites,
     AppButton,
-    IconFavoritesDisabled
+    IconFavoritesDisabled,
+    AppMovieImage
   },
 
   props: {
@@ -22,12 +24,6 @@ export default defineComponent({
       type: Object,
       default: null
     },
-
-    imageUrl: {
-      type: String,
-      required: true,
-    },
-    
     genresMap: {
       type: Object,
       required: true,
@@ -77,18 +73,7 @@ export default defineComponent({
 <template>
   <div v-if="movie" class="card">
     <div class="group">
-      <img
-        v-if="imageUrl"
-        class="card__img"
-        :src="imageUrl"
-        :alt="movie.title"
-      >
-      <img
-        v-else
-        class="card__no-poster"
-        src="https://salonlfc.com/wp-content/uploads/2018/01/image-not-found-scaled-1150x647.png"
-        alt="Image not available"
-      >
+        <app-movie-image :movie="movie" class="card__img" />
     </div>
     <h3 class="card__title">{{ movie.title }}</h3>
     <div class="card__genre">{{ genreNames }}</div>
@@ -132,14 +117,13 @@ export default defineComponent({
     width: 100%;
   }
   .card__img {
-    /* max-width: 180px;
-    width: 100%; */
+    width: 180px; 
     height: 225px;
     object-fit: cover;
     border-radius: 15px;
   }
   .card__no-poster {
-    max-width: 180px;
+    max-width: 280px;
     width: 100%;
     height: 225px;
     font-weight: 600;
