@@ -5,6 +5,7 @@ import SeriesView from '@/pages/SeriesView.vue';
 import CartoonsView from '@/pages/CartoonsView.vue';
 import SearchResultView from '@/pages/SearchResultView.vue';
 import FavoritesView from '@/pages/FavoritesView.vue';
+import MovieDetailView from '@/pages/MovieDetailView.vue';
 
 export const router = createRouter({
   history: createWebHashHistory('/CinemaFavorites'),
@@ -15,5 +16,6 @@ export const router = createRouter({
     { path: '/cartoons', component: CartoonsView, name: 'CartoonsView'},
     { path: '/search-result', component: SearchResultView, name: 'SearchResult'},
     { path: '/favorites', component: FavoritesView, name: 'FavoritesView'},
+    { path: '/movie/:id/:title', component: MovieDetailView, name: 'MovieDetailView', props: true },
   ], 
 });

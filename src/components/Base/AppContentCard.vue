@@ -37,7 +37,7 @@ export default defineComponent({
 
   computed: {
    // Преобразуем genre_ids в строку названий жанров для конкретного фильма
-    genreNames() {
+   genreNames() {
       const genresStore = useGenresStore();
       return this.movie.genre_ids
         .map((id) => genresStore.genresMap[id])
@@ -71,35 +71,37 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="movie" class="card">
-    <div class="group">
+  <router-link :to="{ name: 'MovieDetailView', params: { id: movie.id, title: movie.title } }">
+    <div v-if="movie" class="card">
+      <div class="group">
         <app-movie-image :movie="movie" class="card__img" />
-    </div>
-    <h3 class="card__title">{{ movie.title }}</h3>
-    <div class="card__genre">{{ genreNames }}</div>
-    <div class="card__release">Release date: {{ movie.release_date }}</div>
-    <div class="card__rating">
-      <app-underlay>
-        <div class="rating">{{ roundedRating }}</div>
-      </app-underlay>
-    </div>
-    <div class="card__favorites">
-      <app-button
-        default
-        @click.prevent="toggleFavorite"
-      >
-        <app-underlay class="favorites-underlay">
-          <transition>
-            <template v-if="isInFavorites">
-              <icon-favorites-disabled class="favorites-icon__disabled" />
-            </template>
-    
-            <icon-favorites v-else class="favorites-icon" />
-          </transition>
+      </div>
+      <h3 class="card__title">{{ movie.title }}</h3>
+      <div class="card__genre">{{ genreNames }}</div>
+      <div class="card__release">Release date: {{ movie.release_date }}</div>
+      <div class="card__rating">
+        <app-underlay>
+          <div class="rating">{{ roundedRating }}</div>
         </app-underlay>
-      </app-button>
+      </div>
+      <div class="card__favorites">
+        <app-button
+          default
+          @click.prevent="toggleFavorite"
+        >
+          <app-underlay class="favorites-underlay">
+            <transition>
+              <template v-if="isInFavorites">
+                <icon-favorites-disabled class="favorites-icon__disabled" />
+              </template>
+    
+              <icon-favorites v-else class="favorites-icon" />
+            </transition>
+          </app-underlay>
+        </app-button>
+      </div>
     </div>
-  </div>
+  </router-link>
 </template>
 
 <style scoped>
@@ -126,9 +128,6 @@ export default defineComponent({
     max-width: 280px;
     width: 100%;
     height: 225px;
-    font-weight: 600;
-    font-size: 17px;
-    letter-spacing: 0.01em;
     object-fit: cover;
     border-radius: 15px;
   }
@@ -204,19 +203,15 @@ export default defineComponent({
   }
   @media (max-width: 412px) {
     .card {
-      max-width: 150px;
+      max-width: 280px;
     }
     .card__img {
-      height: auto;
+      width: 100%;
+      height: 400px;
     }
     .card__no-poster {
       max-width: 100%;
-      min-height: 390px;
-    }
-  }
-  @media (max-width: 352px) {
-    .card {
-      max-width: 250px;
+      min-height: auto;
     }
   }
 </style>
