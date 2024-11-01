@@ -1,6 +1,7 @@
 <script>
 import { defineComponent } from 'vue';
 import { useGenresStore } from '@/store/genres.js';
+import { getMovieFinancials } from '@/api/movieDetails/movieFinancials'
 
 export default defineComponent({
   name: 'MovieInfoContent',
@@ -14,6 +15,12 @@ export default defineComponent({
       type: Object,
       required: true,
     },
+  },
+
+  data() {
+    return {
+      movieFinancials: {},
+    };
   },
 
   computed: {
@@ -43,12 +50,29 @@ export default defineComponent({
       return this.movieDetails.cast?.slice(0, 5).map(actor => actor.name) || [];
     }
   },
+
+  async created() {
+    await this.fetchMovieFinancials();
+  },
+
+  methods: {
+    async fetchMovieFinancials() {
+      try {
+        const response = await getMovieFinancials(this.movie.id, this.movie.media_type);
+        console.log(this.movie.media_type)
+        this.movieFinancials = response;
+        console.log(this.movieFinancials)
+      } catch (err) {
+        this.error = 'Error retrieving movie financials';
+      }
+    },
+  }
 });
 </script>
 
 <template>
   <div class="movie-info__content content">
-    <div class="content__group">
+    <div v-if="genreNames" class="content__group">
       <div class="content__title ganre__title">Genre:</div>
       <ul class="content__list">
         <li v-for="ganre in genreNames" :key="ganre.id" class="content__item content-ganre__item">
@@ -57,7 +81,7 @@ export default defineComponent({
       </ul>
     </div>
 
-    <div class="content__group">
+    <div v-if="movie.overview" class="content__group">
       <div class="content__title">Plot:</div>
       <ul class="content__list">
         <li class="content__item">
@@ -104,6 +128,18 @@ export default defineComponent({
         >
           {{ actor }}
           <span v-if="index < topActors.length - 1">•</span>
+        </li>
+      </ul>
+    </div>
+
+    <div v-if="movieFinancials.budget !== undefined && movieFinancials.revenue !== undefined" class="content__group">
+      <div class="content__title">Financials:</div>
+      <ul class="content__list">
+        <li class="content__item">
+          Budget: {{ movieFinancials.budget ? `$${movieFinancials.budget.toLocaleString()}` : 'N/A' }}
+        </li>
+        <li class="content__item">
+          Revenue: {{ movieFinancials.revenue ? `$${movieFinancials.revenue.toLocaleString()}` : 'N/A' }}
         </li>
       </ul>
     </div>

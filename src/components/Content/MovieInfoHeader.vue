@@ -103,10 +103,14 @@ export default defineComponent({
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 10px 12px;
+      padding: 8px 10px;
     }
     .header-movie__button {
       display: none;
+    }
+    .header-movie__rating {
+      font-size: 14px;
+      min-width: 45px;
     }
   } 
   @media (max-width: 399px) {

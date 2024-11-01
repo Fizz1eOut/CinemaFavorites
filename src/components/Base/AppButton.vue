@@ -43,9 +43,9 @@ export default defineComponent({
 
 <style scoped>
   .button-yellow {
-    padding: 12px 20px;
+    padding: 0px 20px;
     width: 100%;
-    height: 100%;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;

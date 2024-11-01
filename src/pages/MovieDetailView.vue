@@ -1,7 +1,7 @@
 <script>
 import { defineComponent } from 'vue';
 import { searchMulti } from '@/api/search/search';
-import { getMovieDetails } from '@/api/search/SearchDetails';
+import { getMovieDetails } from '@/api/movieDetails/SearchDetails';
 import MovieInfo from '@/components/Content/MovieInfo.vue';
 
 export default defineComponent({
@@ -43,9 +43,9 @@ export default defineComponent({
         const movie = response.results.find(
           item => item.id.toString() === this.id && item.title.trim().toLowerCase() === this.title.trim().toLowerCase()
         );
-        console.log(movie)
         if (movie) {
           this.movie = movie;  // Сохраняем данные о фильме
+          console.log(this.movie)
           await this.fetchMovieDetails();
         } else {
           this.error = 'Movie not found';
@@ -58,8 +58,8 @@ export default defineComponent({
     async fetchMovieDetails() {
       try {
         const response = await getMovieDetails(this.movie.id, this.movie.media_type);
-        console.log(response);
         this.movieDetails = response;
+        console.log(this.movieDetails)
       } catch (err) {
         this.error = 'Error retrieving movie details';
       }
