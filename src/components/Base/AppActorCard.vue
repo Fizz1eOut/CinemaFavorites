@@ -49,7 +49,7 @@ export default defineComponent({
 
 <style>
   .actor-card {
-    max-width: 100px;
+    max-width: 130px;
     width: 100%;
     cursor: pointer;
     display: flex;
@@ -59,8 +59,8 @@ export default defineComponent({
     gap: 8px;
   }
   .actor-card__image img {
-    width: 100px;
-    height: 100px;
+    width: 130px;
+    height: 130px;
     object-fit: cover;
     border-radius: 15px;
   }

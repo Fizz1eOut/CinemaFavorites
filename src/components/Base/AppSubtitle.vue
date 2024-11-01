@@ -15,10 +15,9 @@ export default defineComponent({
 
 <style scoped>
 .subtitle {
-    font-weight: 600;
+    font-weight: 700;
     font-size: 24px;
-    line-height: 120%;
-    color: var(--color-black);
-    font-family: "Source Code Pro", monospace;
+    color: var(--color-white);
+    font-family: "Raleway", sans-serif;
   }  
 </style>
