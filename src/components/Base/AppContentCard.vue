@@ -24,10 +24,6 @@ export default defineComponent({
       type: Object,
       default: null
     },
-    genresMap: {
-      type: Object,
-      required: true,
-    }
   },
 
   // data() {

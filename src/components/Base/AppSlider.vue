@@ -19,24 +19,21 @@ export default defineComponent({
         arrows: true,
         paginationKeyboard: true,
         gap: "10px",
-        perPage: 8,
+        perPage: 6,
         breakpoints: {
           1128: {
-            perPage: 6,
+            perPage: 4,
           },
-          850: {
-            perPage: 5,
+          768: {
+            perPage: 3,
             arrows: false,
             pagination: true,
           },
-          710: {
-            perPage: 4,
-          },
-          570: {
-            perPage: 3,
-          },
-          440: {
+          590: {
             perPage: 2,
+          },
+          412: {
+            perPage: 1,
           },
         }
       },
@@ -121,7 +118,7 @@ export default defineComponent({
   }
   @media (max-width: 499px) {
     .splide__pagination {
-      gap: 4px;
+      gap: 2px;
     }
     .slider {
       margin-top: 20px;

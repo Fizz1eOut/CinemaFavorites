@@ -2,9 +2,11 @@
 import { defineComponent } from 'vue';
 import { searchMulti } from '@/api/search/search';
 import { getMovieDetails } from '@/api/movieDetails/SearchDetails';
+import { getSimilarMovies } from '@/api/movieDetails/movieSimilar'; 
 import MovieInfo from '@/components/Content/MovieInfo.vue';
 import AppSlider from '@/components/Base/AppSlider.vue';
 import { SplideSlide } from '@splidejs/vue-splide';
+import AppContentCard from '@/components/Base/AppContentCard.vue'
 import AppActorCard from '@/components/Base/AppActorCard.vue';
 import AppSubtitle from '@/components/Base/AppSubtitle.vue';
 
@@ -14,6 +16,7 @@ export default defineComponent({
   components: {
     MovieInfo,
     AppSlider,
+    AppContentCard,
     AppActorCard,
     SplideSlide,
     AppSubtitle
@@ -34,18 +37,38 @@ export default defineComponent({
     return {
       movie: null,
       movieDetails: {}, 
+      similarMovies: [],
       error: null,
     };
   },
 
   computed: {
     topCast() {
-      return this.movieDetails.cast ? this.movieDetails.cast : [];
+      return this.movieDetails.cast ? this.movieDetails.cast.slice(0, 20) : [];
     }
   },
 
+  watch: {
+    // Отслеживаем изменения id или title
+    id: {
+      immediate: true, // Вызываем сразу при создании компонента
+      handler() {
+        this.fetchMovieData(); // Загружаем данные о фильме при изменении id
+        this.fetchSimilarMovies(); // Загружаем похожие фильмы
+      },
+    },
+    title: {
+      immediate: true, // Вызываем сразу при создании компонента
+      handler() {
+        this.fetchMovieData(); // Загружаем данные о фильме при изменении title
+        this.fetchSimilarMovies(); // Загружаем похожие фильмы
+      },
+    },
+  },
+
   async created() {
-    await this.fetchMovieData(); // Загружаем данные при создании компонента
+    await this.fetchMovieData();
+    await this.fetchSimilarMovies();
   },
 
   methods: {
@@ -75,6 +98,16 @@ export default defineComponent({
       } catch (err) {
         this.error = 'Error retrieving movie details';
       }
+    },
+
+    async fetchSimilarMovies() {
+      try {
+        const similar = await getSimilarMovies(this.id, this.movie.media_type);
+        this.similarMovies = similar;
+        console.log(this.similarMovies)
+      } catch (err) {
+        this.error = 'Error retrieving similar movies';
+      }
     }
   }
 });
@@ -82,6 +115,7 @@ export default defineComponent({
 
 <template>
   <movie-info v-if="movie" :movie="movie" :movie-details="movieDetails" />
+
   <app-slider>
     <template #subtitle>
       <app-subtitle>Top cast</app-subtitle>
@@ -89,6 +123,16 @@ export default defineComponent({
 
     <SplideSlide v-for="actor in topCast" :key="actor.id">
       <app-actor-card :actor="actor" />
+    </SplideSlide>
+  </app-slider>
+
+  <app-slider>
+    <template #subtitle>
+      <app-subtitle>You will be interested</app-subtitle>
+    </template>
+
+    <SplideSlide v-for="similarMovie in similarMovies" :key="similarMovie.id">
+      <app-content-card :movie="similarMovie" />
     </SplideSlide>
   </app-slider>
 </template>
