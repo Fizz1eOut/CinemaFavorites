@@ -17,5 +17,14 @@ export const router = createRouter({
     { path: '/search-result', component: SearchResultView, name: 'SearchResult'},
     { path: '/favorites', component: FavoritesView, name: 'FavoritesView'},
     { path: '/movie/:id/:title', component: MovieDetailView, name: 'MovieDetailView', props: true },
-  ], 
+  ],
+
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    } else if (to.path !== from.path) {
+      return { top: 0 };
+    }
+    return {};
+  },
 });

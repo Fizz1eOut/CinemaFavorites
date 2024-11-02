@@ -34,18 +34,29 @@ export default defineComponent({
     };
   },
 
-  async created() {
+  watch: {
+    // Следим за изменением movie.id
+    'movie.id': {
+      immediate: true,
+      handler() {
+        this.loadTrailer();
+      },
+    },
+  },
+
+  methods: {
+    async loadTrailer() {
+    this.trailerUrl = null; // Сброс предыдущего трейлера
     try {
       const url = await fetchMovieTrailer(this.movie.id);
       if (url) {
-        this.trailerUrl = url; // Сохраняем URL трейлера, если найден
+        this.trailerUrl = url; // Сохраняем новый URL трейлера
       }
     } catch (error) {
       console.log('Trailer not found or another error occurred.', this.movie.title);
     }
   },
-
-  methods: {
+  
     openModal() {
       if (this.trailerUrl) {
         this.showModal = true; // Открываем модалку

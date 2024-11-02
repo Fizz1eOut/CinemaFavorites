@@ -51,6 +51,15 @@ export default defineComponent({
     }
   },
 
+  watch: {
+    movie: {
+      immediate: true,
+      handler() {
+        this.fetchMovieFinancials();
+      }
+    }
+  },
+
   async created() {
     await this.fetchMovieFinancials();
   },
