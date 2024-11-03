@@ -56,15 +56,33 @@ export default defineComponent({
   <li class="favorite__item">
     <app-underlay class="favorite__underlay">
       <app-container size="md">
-        <div class="favorite__card card">
-          <div class="card__image">
-            <app-movie-image :movie="movie" class="card__img" />
-          </div>
-          <div class="card__body">
-            <div class="card__content">
-              <div class="card__wrapper">
-                <h3 class="card__title">{{ movie.title }}</h3>
-                <div class="card__row">
+        <router-link :to="{ name: 'MovieDetailView', params: { id: movie.id, title: movie.title } }">
+          <div class="favorite__card card">
+            <div class="card__image">
+              <app-movie-image :movie="movie" class="card__img" />
+            </div>
+            <div class="card__body">
+              <div class="card__content">
+                <div class="card__wrapper">
+                  <h3 class="card__title">{{ movie.title }}</h3>
+                  <div class="card__row">
+                    <div class="card__rating">
+                      <icon-star class="icon-star" />
+                      <app-rating :rating="movie.vote_average">
+                        /10
+                      </app-rating>
+                    </div>
+                  </div>
+                </div>
+                <div class="card__genres">
+                  <span class="card__release">{{ movie.release_date }}</span>,
+                  {{ genreNames }}
+                </div>
+                <p class="card__overview">{{ movie.overview }}</p>
+              </div>
+
+              <div class="card__info">
+                <div class="rating__shell">
                   <div class="card__rating">
                     <icon-star class="icon-star" />
                     <app-rating :rating="movie.vote_average">
@@ -72,34 +90,18 @@ export default defineComponent({
                     </app-rating>
                   </div>
                 </div>
-              </div>
-              <div class="card__genres">
-                <span class="card__release">{{ movie.release_date }}</span>,
-                {{ genreNames }}
-              </div>
-              <p class="card__overview">{{ movie.overview }}</p>
-            </div>
 
-            <div class="card__info">
-              <div class="rating__shell">
-                <div class="card__rating">
-                  <icon-star class="icon-star" />
-                  <app-rating :rating="movie.vote_average">
-                    /10
-                  </app-rating>
-                </div>
-              </div>
-
-              <div class="card__buttons">
-                <app-trailer-modal :movie="movie" />
+                <div class="card__buttons">
+                  <app-trailer-modal class="button-trailer" :movie="movie" />
               
-                <app-button yellow class="button-favorites" @click="removeMovie">
-                  <icon-favorites-disabled class="icon-favorites__disabled" />
-                </app-button>
+                  <app-button yellow class="button-favorites" @click.prevent="removeMovie">
+                    <icon-favorites-disabled class="icon-favorites__disabled" />
+                  </app-button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </router-link>
       </app-container>
     </app-underlay>
   </li>
@@ -266,6 +268,9 @@ export default defineComponent({
     }
     .card__buttons {
       max-width: 100%;
+    }
+    .button-trailer {
+      width: 100%;
     }
     .card__body {
       min-height: unset;

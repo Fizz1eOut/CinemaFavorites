@@ -83,7 +83,7 @@ export default defineComponent({
       yellow
       :disabled="!trailerUrl"
       :class="{ 'disabled-button': !trailerUrl }"
-      @click="openModal"
+      @click.prevent="openModal"
     >
       {{ trailerUrl ? 'Watch Trailer' : 'Trailer Not Found' }}
       <icon-play v-if="trailerUrl" class="icon-play" />
