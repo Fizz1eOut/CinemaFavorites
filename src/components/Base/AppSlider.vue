@@ -10,34 +10,47 @@ export default defineComponent({
     Splide,
     SplideTrack,
   },
-  
-  data() {
-    return {
-      slideOptions: {
+
+  props: {
+    perPage: {
+      type: Number,
+      default: 6,
+    },
+
+    breakpoints: {
+      type: Object,
+      default: () => ({
+        1128: { perPage: 4 },
+        768: { perPage: 3, arrows: false, pagination: true },
+        590: { perPage: 2 },
+        412: { perPage: 1 },
+      }),
+    },
+
+    arrows: {
+      type: Boolean,
+      default: true,
+    },
+
+    padding: {
+      type: String,
+      default: '0px',
+    },
+  },
+
+  computed: {
+    slideOptions() {
+      return {
         type: 'slide',
         pagination: false,
-        arrows: true,
+        arrows: this.arrows,
         paginationKeyboard: true,
-        gap: "10px",
-        perPage: 6,
-        breakpoints: {
-          1128: {
-            perPage: 4,
-          },
-          768: {
-            perPage: 3,
-            arrows: false,
-            pagination: true,
-          },
-          590: {
-            perPage: 2,
-          },
-          412: {
-            perPage: 1,
-          },
-        }
-      },
-    }
+        gap: '10px',
+        perPage: this.perPage,
+        padding: this.padding,
+        breakpoints: this.breakpoints,
+      };
+    },
   },
 });
 </script>
@@ -74,7 +87,7 @@ export default defineComponent({
   .slider__body {
     margin-top: 20px;
   }
-  .slider__body .splide__pagination {
+  /* .slider__body .splide__pagination {
     bottom: -10px;
   }
   .splide__pagination {
@@ -86,7 +99,7 @@ export default defineComponent({
 
   .slider__body .splide__pagination .splide__pagination__page.is-active {
     background-color: var(--color-blue);
-  }
+  } */
   .splide__slide {
     display: flex;
     justify-content: center;
