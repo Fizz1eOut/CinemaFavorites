@@ -53,4 +53,7 @@ export default defineComponent({
       display: none;
     }
   }
+  .router-link-active .link {
+    color: var(--color-yellow-disabled);
+  }
 </style>

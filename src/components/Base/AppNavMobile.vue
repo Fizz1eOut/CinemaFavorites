@@ -116,4 +116,10 @@ export default defineComponent({
     height: 20px;
     fill: var(--color-white);
   }
+  .router-link-active .nav-mobile__link {
+    color: var(--color-yellow-disabled);
+  }
+  .router-link-active svg {
+    fill: var(--color-yellow-disabled);
+  }
 </style>

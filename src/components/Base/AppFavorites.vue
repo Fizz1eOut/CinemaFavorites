@@ -55,4 +55,7 @@ export default defineComponent({
     justify-content: center;
     background-color: var(--color-blue);
   }
+  .router-link-active .icon-favorites {
+    fill: var(--color-yellow-disabled);
+  }
 </style>
