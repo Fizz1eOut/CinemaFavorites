@@ -34,7 +34,13 @@ export default defineComponent({
   <app-slider 
     v-if="topCast.length > 0" 
     :per-page="8" 
-    :breakpoints="{ 1114: { perPage: 6 }, 850: { perPage: 4, arrows: false }, 570: { perPage: 3 }, 440: { perPage: 2, padding: '10%' }, 360: { perPage: 1, padding: '20%' } }"
+    :breakpoints="{ 
+      1114: { perPage: 6 },
+      850: { perPage: 4 },
+      768: { arrows: false },
+      570: { perPage: 3 },
+      440: { perPage: 2 },
+    }"
   >
     <template #subtitle>
       <app-subtitle>Top cast</app-subtitle>

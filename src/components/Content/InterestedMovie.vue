@@ -29,7 +29,13 @@ export default defineComponent({
   <app-slider
     v-if="similarMovies.length > 0"
     :per-page="6"
-    :breakpoints="{ 1024: { perPage: 4 }, 768: { perPage: 3, arrows: false }, 590: { perPage: 2, }, 412: { perPage: 1, padding: '10%' }, }"
+    :breakpoints="{ 
+      1140: { perPage: 5 },
+      950: { perPage: 4 },
+      768: { perPage: 3, arrows: false },
+      590: { perPage: 2 },
+      342: { perPage: 1 },
+    }"
   >
     <template #subtitle>
       <app-subtitle>You will be interested</app-subtitle>

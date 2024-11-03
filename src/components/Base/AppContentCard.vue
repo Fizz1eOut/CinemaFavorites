@@ -133,6 +133,12 @@ export default defineComponent({
     font-size: 15px;
     letter-spacing: 0.01em;
     color: var(--color-white);
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 40px;
   }
   .card__genre {
     margin-top: 3px;
@@ -141,6 +147,12 @@ export default defineComponent({
     letter-spacing: 0em;
     color: rgba(255, 255, 255, 0.8);
     font-family: "Raleway", sans-serif;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 30px;
   }
   .card__release {
     margin-top: 2px;
@@ -198,6 +210,19 @@ export default defineComponent({
     opacity: 0;
   }
   @media (max-width: 412px) {
+    .card {
+      max-width: 150px;
+    }
+    .card__img {
+      width: 150px;
+    }
+    .card__no-poster {
+      max-width: 100%;
+      min-height: auto;
+    }
+  }
+
+  @media (max-width: 342px) {
     .card {
       max-width: 280px;
     }
