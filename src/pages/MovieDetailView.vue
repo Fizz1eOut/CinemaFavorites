@@ -5,14 +5,14 @@ import { getMovieDetails } from '@/api/movieDetails/SearchDetails';
 import { getSimilarMovies } from '@/api/movieDetails/movieSimilar'; 
 import MovieInfo from '@/components/Content/MovieInfo.vue';
 import TopActors from '@/components/Content/TopActors.vue';
-import InterestedMovie from '@/components/Content/InterestedMovie.vue';
+import AppContentSlider from '@/components/Base/AppContentSlider.vue';
 
 export default defineComponent({
   name: 'MovieDetailView',
 
   components: {
     MovieInfo,
-    InterestedMovie,
+    AppContentSlider,
     TopActors,
 
   },
@@ -107,7 +107,11 @@ export default defineComponent({
 
   <top-actors :movie-details="movieDetails" />
 
-  <interested-movie :similar-movies="similarMovies" />
+  <app-content-slider :movies="similarMovies">
+    <template #subtitle>
+      You might also like
+    </template>
+  </app-content-slider>
 </template>
 
 <style>

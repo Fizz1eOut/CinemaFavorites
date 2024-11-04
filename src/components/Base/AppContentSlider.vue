@@ -6,7 +6,7 @@ import AppSlider from '@/components/Base/AppSlider.vue';
 import { SplideSlide } from '@splidejs/vue-splide';
 
 export default defineComponent({
-  name: 'InterestedMovie',
+  name: 'ContentSlider',
 
   components: {
     AppSubtitle,
@@ -16,7 +16,7 @@ export default defineComponent({
   },
 
   props: {
-    similarMovies: {
+    movies: {
       type: Object,
       required: true,
     },
@@ -27,7 +27,7 @@ export default defineComponent({
 
 <template>
   <app-slider
-    v-if="similarMovies.length > 0"
+    v-if="movies.length > 0"
     :per-page="6"
     :breakpoints="{ 
       1140: { perPage: 5 },
@@ -37,12 +37,12 @@ export default defineComponent({
       342: { perPage: 1 },
     }"
   >
-    <template #subtitle>
-      <app-subtitle>You will be interested</app-subtitle>
+    <template v-if="$slots.subtitle" #subtitle>
+      <app-subtitle><slot name="subtitle" /></app-subtitle>
     </template>
 
-    <SplideSlide v-for="similarMovie in similarMovies" :key="similarMovie.id">
-      <app-content-card :movie="similarMovie" />
+    <SplideSlide v-for="movie in movies" :key="movie.id">
+      <app-content-card :movie="movie" />
     </SplideSlide>
   </app-slider>
 </template>
