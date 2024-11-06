@@ -41,7 +41,8 @@ export default defineComponent({
   computed: {
     slideOptions() {
       return {
-        type: 'slide',
+        type: 'loop',
+        autoplay: true,
         pagination: false,
         arrows: this.arrows,
         paginationKeyboard: true,
