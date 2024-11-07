@@ -93,7 +93,6 @@ export default defineComponent({
       try {
         const similar = await getSimilarMovies(this.id, this.movie.media_type);
         this.similarMovies = similar;
-        console.log(this.similarMovies)
       } catch (err) {
         this.error = 'Error retrieving similar movies';
       }

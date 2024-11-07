@@ -32,19 +32,21 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="actor-card">
-    <div class="actor-card__group">
-      <div class="actor-card__image">
-        <img
-          v-if="imageUrl"
-          :src="imageUrl"
-          :alt="actorName"
-        >
-        <img v-else src="https://salonlfc.com/wp-content/uploads/2018/01/image-not-found-scaled-1150x647.png" alt="Image not available">
+  <router-link :to="{ name: 'ActorDetailView', params: { id: actor.id, title: actor.name } }">
+    <div class="actor-card">
+      <div class="actor-card__group">
+        <div class="actor-card__image">
+          <img
+            v-if="imageUrl"
+            :src="imageUrl"
+            :alt="actorName"
+          >
+          <img v-else src="https://salonlfc.com/wp-content/uploads/2018/01/image-not-found-scaled-1150x647.png" alt="Image not available">
+        </div>
+        <h3 class="actor-card__name">{{ actorName }}</h3>
       </div>
-      <h3 class="actor-card__name">{{ actorName }}</h3>
     </div>
-  </div>
+  </router-link>
 </template>
 
 <style>

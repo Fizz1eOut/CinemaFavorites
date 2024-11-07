@@ -6,6 +6,7 @@ import CartoonsView from '@/pages/CartoonsView.vue';
 import SearchResultView from '@/pages/SearchResultView.vue';
 import FavoritesView from '@/pages/FavoritesView.vue';
 import MovieDetailView from '@/pages/MovieDetailView.vue';
+import ActorDetailView from '@/pages/ActorDetailView.vue';
 
 export const router = createRouter({
   history: createWebHashHistory('/CinemaFavorites'),
@@ -17,6 +18,7 @@ export const router = createRouter({
     { path: '/search-result', component: SearchResultView, name: 'SearchResult'},
     { path: '/favorites', component: FavoritesView, name: 'FavoritesView'},
     { path: '/movie/:id/:title', component: MovieDetailView, name: 'MovieDetailView', props: true },
+    { path: '/actor/:id/:title', component: ActorDetailView, name: 'ActorDetailView', props: true },
   ],
 
   scrollBehavior(to, from, savedPosition) {

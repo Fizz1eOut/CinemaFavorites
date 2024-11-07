@@ -60,17 +60,11 @@ export default defineComponent({
     }
   },
 
-  async created() {
-    await this.fetchMovieFinancials();
-  },
-
   methods: {
     async fetchMovieFinancials() {
       try {
         const response = await getMovieFinancials(this.movie.id, this.movie.media_type);
-        console.log(this.movie.media_type)
         this.movieFinancials = response;
-        console.log(this.movieFinancials)
       } catch (err) {
         this.error = 'Error retrieving movie financials';
       }
