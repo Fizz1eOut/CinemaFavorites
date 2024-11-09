@@ -15,7 +15,7 @@ export default defineComponent({
 
 <style scoped>
 .subtitle {
-    font-weight: 700;
+    font-weight: 400;
     font-size: 24px;
     color: var(--color-white);
     font-family: "Raleway", sans-serif;

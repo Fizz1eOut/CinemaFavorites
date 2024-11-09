@@ -25,7 +25,7 @@ export default defineComponent({
 
 <template>
   <div class="nav-mobile">
-    <app-underlay>
+    <app-underlay class="nav-mobile__underlay">
       <div class="nav-mobile__wrapper">
         <div class="nav-mobile__body">
           <div class="nav-mobile__item">
@@ -79,6 +79,9 @@ export default defineComponent({
 </template>
 
 <style scoped>
+  .nav-mobile__underlay {
+    border-radius: 0;
+  }
   .nav-mobile {
     width: 100%;
     position: fixed;

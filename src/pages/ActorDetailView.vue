@@ -2,6 +2,7 @@
 import { defineComponent } from 'vue';
 import { getActorDetails } from '@/api/actor/actor';
 import ActorDetails from '@/components/Content/ActorDetails.vue';
+import { getActorKnownForMovies } from '@/api/actor/actorKnownForMovies';
 
 export default defineComponent({
   name: 'ActorDetailView',
@@ -24,6 +25,7 @@ export default defineComponent({
   data() {
     return {
       actorDetails: [],
+      knownForMovies: []
     };
   },
 
@@ -43,7 +45,7 @@ export default defineComponent({
           response.name.trim().toLowerCase() === this.title.trim().toLowerCase()
         ) {
           this.actorDetails = response;  // Сохраняем данные актера
-          console.log(this.actorDetails)
+          await this.fetchKnownForMovies();
         } else {
           console.log('Actor not found or mismatch');
         }
@@ -51,12 +53,21 @@ export default defineComponent({
         console.log(err, 'Error retrieving actor data')
       }
     },
+
+    async fetchKnownForMovies() {
+      try {
+        const response = await getActorKnownForMovies(this.id)
+        this.knownForMovies = response.cast;
+      } catch (error) {
+        console.error('A mistake made during a performance by a famous movie actor:', error);
+      }
+    },
   },
 });
 </script>
 
 <template>
-  <actor-details :id="id" :actor="actorDetails" />
+  <actor-details :id="id" :actor="actorDetails" :movie="knownForMovies" />
 </template>
 
 <style>

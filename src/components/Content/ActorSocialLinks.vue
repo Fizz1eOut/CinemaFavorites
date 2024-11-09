@@ -40,7 +40,6 @@ export default defineComponent({
       try {
         const response = await getActorSocialLinks(this.id);
         this.socialLinks = response;
-        console.log(this.socialLinks)
       } catch (err) {
         console.log(err, 'Failed to load social links') 
       }
@@ -95,13 +94,18 @@ export default defineComponent({
 </template>
 
 <style scoped>
-.social-links {
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-}
-.icon {
-  width: 38px;
-  height: 38px;
-}
+  .social-links {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  .icon {
+    width: 38px;
+    height: 38px;
+  }
+  @media (max-width: 768px) {
+    .social-links {
+      justify-content: space-between;
+    }
+  }
 </style>
