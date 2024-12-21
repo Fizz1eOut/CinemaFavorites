@@ -127,15 +127,12 @@ export default defineComponent({
   }
   @media (max-width: 768px) {
       .slider__body {
-      margin-top: 40px;
-    }
+        margin-top: 20px;
+      }
   }
   @media (max-width: 499px) {
     .splide__pagination {
       gap: 2px;
-    }
-    .slider {
-      margin-top: 20px;
     }
   }
 </style>
